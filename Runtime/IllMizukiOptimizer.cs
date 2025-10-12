@@ -412,8 +412,8 @@ namespace jp.illusive_isc.MizukiOptimizer
             if (body_b)
                 if (body_b.TryGetComponent<SkinnedMeshRenderer>(out var body_bSMR))
                 {
-                    body_bSMR.SetBlendShapeWeight(28, heelFlg1 || heelFlg2 ? 0 : 100);
-                    body_bSMR.SetBlendShapeWeight(29, heelFlg2 ? 100 : 0);
+                    IllMizukiUtils.SetWeight(body_bSMR, "Foot_heel_OFF_____足_ヒールオフ", heelFlg1 || heelFlg2 ? 0 : 100);
+                    IllMizukiUtils.SetWeight(body_bSMR, "Foot_Hiheel_____足_ハイヒール", heelFlg2 ? 100 : 0);
                 }
             foreach (var config in GetParamConfigs(descriptor))
             {
