@@ -1,0 +1,16 @@
+{
+  "name": "jp.illusive-isc.mizuki-optimizer",
+  "version": "1.4.0",
+  "displayName": "MizukiOptimizer",
+  "description": "MizukiOptimizer",
+  "unity": "2022.3",
+  "author": {
+    "name": "illusive_isc",
+    "url": "https://illusive_isc.jp"
+  },
+  "url": "https://github.com/illusive-isc/MizukiOptimizer",
+  "vpmDependencies": {
+    "nadena.dev.ndmf": "^1.6.0",
+    "com.vrchat.avatars": ">=3.7.0"
+  }
+}

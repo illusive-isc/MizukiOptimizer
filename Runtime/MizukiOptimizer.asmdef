@@ -1,0 +1,26 @@
+{
+    "name": "jp.illusive_isc.MizukiOptimizer",
+    "rootNamespace": "jp.illusive_isc.MizukiOptimizer",
+    "references": [
+        "com.anatawa12.avatar-optimizer.runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "VRC.Dynamics.dll",
+        "VRCSDK3A.dll",
+        "VRCSDKBase.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.anatawa12.avatar-optimizer",
+            "expression": "",
+            "define": "AVATAR_OPTIMIZER_FOUND"
+        }
+    ],
+    "noEngineReferences": false
+}
