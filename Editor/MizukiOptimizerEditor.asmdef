@@ -27,6 +27,11 @@
             "name": "com.anatawa12.avatar-optimizer",
             "expression": "",
             "define": "AVATAR_OPTIMIZER_FOUND"
+        },
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "",
+            "define": "NDMF_FOUND"
         }
     ],
     "noEngineReferences": false
