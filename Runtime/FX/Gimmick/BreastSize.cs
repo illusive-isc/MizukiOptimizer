@@ -9,7 +9,7 @@ using UnityEditor.Animations;
 namespace jp.illusive_isc.MizukiOptimizer
 {
     [AddComponentMenu("")]
-    internal class BreastSize : Utils
+    internal class BreastSize : MizukiOptimizerBase
     {
         VRCAvatarDescriptor descriptor;
         AnimatorController animator;

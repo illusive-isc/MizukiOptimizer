@@ -11,12 +11,8 @@ using UnityEditor.Animations;
 namespace jp.illusive_isc.MizukiOptimizer
 {
     [AddComponentMenu("")]
-    internal class Default : Utils
+    internal class Core : MizukiOptimizerBase
     {
-        HashSet<string> paramList = new();
-        VRCAvatarDescriptor descriptor;
-        AnimatorController animator;
-
         private static readonly List<string> MenuParametersOnly = new()
         {
             "HeartGunCollider L",
@@ -68,132 +64,122 @@ namespace jp.illusive_isc.MizukiOptimizer
             "blink",
         };
 
-        public void Initialize(
-            VRCAvatarDescriptor descriptor,
-            AnimatorController animator
-        )
-        {
-            this.descriptor = descriptor;
-            this.animator = animator;
-        }
+        // public void DeleteFx()
+        // {
+        //     foreach (var layer in animator.layers)
+        //     {
+        //         if (layer.name == "butterfly")
+        //         {
+        //             foreach (var state in layer.stateMachine.states)
+        //             {
+        //                 if (state.state.name == "New State" || state.state.name == "New State 0")
+        //                 {
+        //                     layer.stateMachine.RemoveState(state.state);
+        //                     continue;
+        //                 }
+        //                 if (state.state.name == "butterfly_off")
+        //                 {
+        //                     foreach (var transition in state.state.transitions)
+        //                     {
+        //                         foreach (var condition in transition.conditions)
+        //                         {
+        //                             if (condition.parameter == "VRMode")
+        //                             {
+        //                                 transition.conditions = new AnimatorCondition[]
+        //                                 {
+        //                                     new()
+        //                                     {
+        //                                         mode = AnimatorConditionMode.Greater,
+        //                                         parameter = "VRMode",
+        //                                         threshold = 0.5f,
+        //                                     },
+        //                                 };
+        //                                 break;
+        //                             }
+        //                         }
+        //                     }
+        //                     continue;
+        //                 }
+        //             }
+        //         }
+        //         if (layer.name == "MainCtrlTree")
+        //         {
+        //             foreach (var state in layer.stateMachine.states)
+        //             {
+        //                 if (state.state.name == "MainCtrlTree 0")
+        //                 {
+        //                     layer.stateMachine.RemoveState(state.state);
+        //                     break;
+        //                 }
+        //             }
+        //             foreach (var state in layer.stateMachine.states)
+        //             {
+        //                 if (state.state.motion is BlendTree blendTree)
+        //                 {
+        //                     BlendTree newBlendTree = new()
+        //                     {
+        //                         name = "VRMode",
+        //                         blendParameter = "VRMode",
+        //                         blendParameterY = "Blend",
+        //                         blendType = BlendTreeType.Simple1D,
+        //                         useAutomaticThresholds = false,
+        //                         maxThreshold = 1.0f,
+        //                         minThreshold = 0.0f,
+        //                     };
+        //                     blendTree.AddChild(newBlendTree);
+        //                     // BlendTreeの子モーションを取得
+        //                     var children = blendTree.children;
 
-        public void DeleteFx()
-        {
-            foreach (var layer in animator.layers)
-            {
-                if (layer.name == "butterfly")
-                {
-                    foreach (var state in layer.stateMachine.states)
-                    {
-                        if (state.state.name == "New State" || state.state.name == "New State 0")
-                        {
-                            layer.stateMachine.RemoveState(state.state);
-                            continue;
-                        }
-                        if (state.state.name == "butterfly_off")
-                        {
-                            foreach (var transition in state.state.transitions)
-                            {
-                                foreach (var condition in transition.conditions)
-                                {
-                                    if (condition.parameter == "VRMode")
-                                    {
-                                        transition.conditions = new AnimatorCondition[]
-                                        {
-                                            new()
-                                            {
-                                                mode = AnimatorConditionMode.Greater,
-                                                parameter = "VRMode",
-                                                threshold = 0.5f,
-                                            },
-                                        };
-                                        break;
-                                    }
-                                }
-                            }
-                            continue;
-                        }
-                    }
-                }
-                if (layer.name == "MainCtrlTree")
-                {
-                    foreach (var state in layer.stateMachine.states)
-                    {
-                        if (state.state.name == "MainCtrlTree 0")
-                        {
-                            layer.stateMachine.RemoveState(state.state);
-                            break;
-                        }
-                    }
-                    foreach (var state in layer.stateMachine.states)
-                    {
-                        if (state.state.motion is BlendTree blendTree)
-                        {
-                            BlendTree newBlendTree = new()
-                            {
-                                name = "VRMode",
-                                blendParameter = "VRMode",
-                                blendParameterY = "Blend",
-                                blendType = BlendTreeType.Simple1D,
-                                useAutomaticThresholds = false,
-                                maxThreshold = 1.0f,
-                                minThreshold = 0.0f,
-                            };
-                            blendTree.AddChild(newBlendTree);
-                            // BlendTreeの子モーションを取得
-                            var children = blendTree.children;
+        //                     // "LipSynk" のモーションがある場合、threshold を変更
+        //                     for (int i = 0; i < children.Length; i++)
+        //                     {
+        //                         if (children[i].motion.name == "VRMode")
+        //                         {
+        //                             children[i].threshold = 1;
+        //                         }
+        //                     }
+        //                     // 修正した children 配列を再代入（これをしないと変更が反映されない）
+        //                     blendTree.children = children;
 
-                            // "LipSynk" のモーションがある場合、threshold を変更
-                            for (int i = 0; i < children.Length; i++)
-                            {
-                                if (children[i].motion.name == "VRMode")
-                                {
-                                    children[i].threshold = 1;
-                                }
-                            }
-                            // 修正した children 配列を再代入（これをしないと変更が反映されない）
-                            blendTree.children = children;
-
-                            newBlendTree.children = new ChildMotion[]
-                            {
-                                new()
-                                {
-                                    motion = AssetDatabase.LoadAssetAtPath<Motion>(
-                                        AssetDatabase.GUIDToAssetPath(
-                                            AssetDatabase.FindAssets("VRMode0")[0]
-                                        )
-                                    ),
-                                    threshold = 0.0f,
-                                    timeScale = 1,
-                                },
-                                new()
-                                {
-                                    motion = AssetDatabase.LoadAssetAtPath<Motion>(
-                                        AssetDatabase.GUIDToAssetPath(
-                                            AssetDatabase.FindAssets("VRMode1")[0]
-                                        )
-                                    ),
-                                    threshold = 1.0f,
-                                    timeScale = 1,
-                                },
-                            };
-                            AssetDatabase.AddObjectToAsset(newBlendTree, animator);
-                            AssetDatabase.SaveAssets();
-                        }
-                    }
-                }
-            }
-            // "VRMode" パラメータが Float でない場合は再設定
-            foreach (var p in animator.parameters.Where(p => p.name == "VRMode").ToList())
-            {
-                if (p.type != AnimatorControllerParameterType.Float)
-                {
-                    animator.RemoveParameter(p);
-                    animator.AddParameter("VRMode", AnimatorControllerParameterType.Float);
-                }
-            }
-
-        }
+        //                     newBlendTree.children = new ChildMotion[]
+        //                     {
+        //                         new()
+        //                         {
+        //                             motion = AssetDatabase.LoadAssetAtPath<Motion>(
+        //                                 AssetDatabase.GUIDToAssetPath(
+        //                                     AssetDatabase.FindAssets("VRMode0")[0]
+        //                                 )
+        //                             ),
+        //                             threshold = 0.0f,
+        //                             timeScale = 1,
+        //                         },
+        //                         new()
+        //                         {
+        //                             motion = AssetDatabase.LoadAssetAtPath<Motion>(
+        //                                 AssetDatabase.GUIDToAssetPath(
+        //                                     AssetDatabase.FindAssets("VRMode1")[0]
+        //                                 )
+        //                             ),
+        //                             threshold = 1.0f,
+        //                             timeScale = 1,
+        //                         },
+        //                     };
+        //                     AssetDatabase.AddObjectToAsset(newBlendTree, animator);
+        //                     AssetDatabase.SaveAssets();
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     // "VRMode" パラメータが Float でない場合は再設定
+        //     foreach (var p in animator.parameters.Where(p => p.name == "VRMode").ToList())
+        //     {
+        //         if (p.type != AnimatorControllerParameterType.Float)
+        //         {
+        //             animator.RemoveParameter(p);
+        //             animator.AddParameter("VRMode", AnimatorControllerParameterType.Float);
+        //         }
+        //     }
+        // }
 
         // public void DeleteFxBT()
         // {
@@ -246,20 +232,19 @@ namespace jp.illusive_isc.MizukiOptimizer
         //     return this;
         // }
 
-        public void ChangeObj()
-        {
-            // DestroyObj(descriptor.transform.Find("Advanced/Object"));
-            // DestroyObj(descriptor.transform.Find("Advanced/FaceEffect"));
-            // DestroyObj(descriptor.transform.Find("Advanced/Gimmick1/8"));
-            // DestroyObj(descriptor.transform.Find("Advanced/Gimmick2/3"));
-            // DestroyObj(descriptor.transform.Find("Advanced/Gimmick2/5"));
-            // DestroyObj(descriptor.transform.Find("Advanced/Gimmick2/6"));
-            // DestroyObj(descriptor.transform.Find("Advanced/Gimmick2/7"));
-            DestroyObj(descriptor.transform.Find("Advanced/cameraLight&eyeLookHide"));
+        // public void ChangeObj()
+        // {
+        //     // DestroyObj(descriptor.transform.Find("Advanced/Object"));
+        //     // DestroyObj(descriptor.transform.Find("Advanced/FaceEffect"));
+        //     // DestroyObj(descriptor.transform.Find("Advanced/Gimmick1/8"));
+        //     // DestroyObj(descriptor.transform.Find("Advanced/Gimmick2/3"));
+        //     // DestroyObj(descriptor.transform.Find("Advanced/Gimmick2/5"));
+        //     // DestroyObj(descriptor.transform.Find("Advanced/Gimmick2/6"));
+        //     // DestroyObj(descriptor.transform.Find("Advanced/Gimmick2/7"));
+        //     DestroyObj(descriptor.transform.Find("Advanced/cameraLight&eyeLookHide"));
+        // }
 
-        }
-
-        private Default ParticleOptimize()
+        private Core ParticleOptimize()
         {
             SetMaxParticle("Advanced/Particle/1/breath", 100);
             SetMaxParticle("Advanced/Particle/2/WaterFoot_R/WaterFoot2/WaterFoot3", 10);

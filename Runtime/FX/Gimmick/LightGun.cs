@@ -9,7 +9,7 @@ using UnityEditor.Animations;
 namespace jp.illusive_isc.MizukiOptimizer
 {
     [AddComponentMenu("")]
-    internal class LightGun : Utils
+    internal class LightGun : MizukiOptimizerBase
     {
         HashSet<string> paramList = new();
         VRCAvatarDescriptor descriptor;

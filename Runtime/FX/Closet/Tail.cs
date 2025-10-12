@@ -7,7 +7,7 @@ using UnityEditor.Animations;
 
 namespace jp.illusive_isc.MizukiOptimizer
 {
-    internal class Tail : Utils
+    internal class Tail : MizukiOptimizerBase
     {
         VRCAvatarDescriptor descriptor;
         AnimatorController animator;

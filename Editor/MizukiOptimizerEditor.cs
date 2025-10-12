@@ -28,6 +28,8 @@ namespace jp.illusive_isc.MizukiOptimizer
         SerializedProperty eightBitFlg;
         SerializedProperty PenCtrlFlg;
         SerializedProperty FreeParticleFlg;
+        SerializedProperty HandTrailFlg;
+        SerializedProperty NailTrailFlg;
         SerializedProperty FaceGestureFlg;
         SerializedProperty FaceLockFlg;
         SerializedProperty FaceValFlg;
@@ -180,6 +182,8 @@ namespace jp.illusive_isc.MizukiOptimizer
             eightBitFlg = serializedObject.FindProperty("eightBitFlg");
             PenCtrlFlg = serializedObject.FindProperty("PenCtrlFlg");
             FreeParticleFlg = serializedObject.FindProperty("FreeParticleFlg");
+            HandTrailFlg = serializedObject.FindProperty("HandTrailFlg");
+            NailTrailFlg = serializedObject.FindProperty("NailTrailFlg");
             FaceGestureFlg = serializedObject.FindProperty("FaceGestureFlg");
             FaceLockFlg = serializedObject.FindProperty("FaceLockFlg");
             FaceValFlg = serializedObject.FindProperty("FaceValFlg");
@@ -382,6 +386,9 @@ namespace jp.illusive_isc.MizukiOptimizer
             EditorGUILayout.PropertyField(WhiteBreathFlg, new GUIContent("ホワイトブレス削除"));
             EditorGUILayout.PropertyField(BubbleBreathFlg, new GUIContent("バブルブレス削除"));
             EditorGUILayout.PropertyField(FootStampFlg, new GUIContent("足跡削除"));
+            EditorGUILayout.PropertyField(eightBitFlg, new GUIContent("8bit削除"));
+            EditorGUILayout.PropertyField(HandTrailFlg, new GUIContent("ハンドトレイル削除"));
+            EditorGUILayout.PropertyField(NailTrailFlg, new GUIContent("ネイルトレイル削除"));
             EditorGUILayout.PropertyField(eightBitFlg, new GUIContent("8bit削除"));
             EditorGUILayout.PropertyField(PenCtrlFlg, new GUIContent("ペン操作削除"));
             EditorGUILayout.PropertyField(

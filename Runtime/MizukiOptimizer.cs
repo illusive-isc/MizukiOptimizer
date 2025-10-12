@@ -112,6 +112,8 @@ namespace jp.illusive_isc.MizukiOptimizer
         private bool PenCtrlFlg = false;
 
         public bool FreeParticleFlg = false;
+        public bool HandTrailFlg = false;
+        public bool NailTrailFlg = false;
 
         public bool FaceGestureFlg = false;
 
@@ -208,17 +210,17 @@ namespace jp.illusive_isc.MizukiOptimizer
         }
 
         private void ProcessParam<T>(VRCAvatarDescriptor descriptor)
-            where T : ScriptableObject
+            where T : MizukiOptimizerBase, new()
         {
-            var instance = ScriptableObject.CreateInstance<T>();
             var type = typeof(T);
+            const System.Reflection.BindingFlags bindingFlags =
+                System.Reflection.BindingFlags.Public
+                | System.Reflection.BindingFlags.NonPublic
+                | System.Reflection.BindingFlags.Instance
+                | System.Reflection.BindingFlags.Static;
 
             if (!methodCache.TryGetValue(type, out var methods))
             {
-                var bindingFlags = System.Reflection.BindingFlags.Public
-                    | System.Reflection.BindingFlags.NonPublic
-                    | System.Reflection.BindingFlags.Instance;
-
                 methods = new[]
                 {
                     type.GetMethod("Initialize", bindingFlags),
@@ -232,38 +234,59 @@ namespace jp.illusive_isc.MizukiOptimizer
                 methodCache[type] = methods;
             }
 
+            // 静的フィールドから値を一括取得（static/instanceを適切に判定）
+            var parametersField = type.GetField("Parameters", bindingFlags);
+            var menuPathField = type.GetField("menuPath", bindingFlags);
+            var delPathField = type.GetField("delPath", bindingFlags);
+            var layersField = type.GetField("Layers", bindingFlags);
+
+            var instance = new T();
+
+            // フィールドがstaticかどうかを判定してアクセス
+            var parameters =
+                GetFieldValue<List<string>>(parametersField, instance) ?? new List<string>();
+            var menuPath =
+                GetFieldValue<List<string>>(menuPathField, instance) ?? new List<string>();
+            var delPath = GetFieldValue<List<string>>(delPathField, instance) ?? new List<string>();
+            var layers = GetFieldValue<List<string>>(layersField, instance) ?? new List<string>();
+
             var initializeMethod = methods[0];
-            var deleteFxMethod = methods[1];
-            var deleteFxBTMethod = methods[2];
-            var deleteParamMethod = methods[3];
-            var deleteVRCExpressionsMethod = methods[4];
-            var ParticleOptimizeMethod = methods[5];
-            var changeObjMethod = methods[6];
 
             if (initializeMethod != null)
             {
-                try
-                {
-                    int count = initializeMethod.GetParameters().Length;
-                    object result = initializeMethod.Invoke(
-                        instance,
-                        count == 3
-                            ? new object[] { descriptor, controller, this }
-                            : new object[] { descriptor, controller }
-                    );
+                var paramCount = initializeMethod.GetParameters().Length;
+                var args =
+                    paramCount == 3
+                        ? new object[] { descriptor, controller, this }
+                        : new object[] { descriptor, controller };
+                initializeMethod.Invoke(instance, args);
+            }
 
-                    deleteFxMethod?.Invoke(result, null);
-                    deleteFxBTMethod?.Invoke(result, null);
-                    deleteParamMethod?.Invoke(result, null);
-                    deleteVRCExpressionsMethod?.Invoke(result, new object[] { menu, param });
-                    ParticleOptimizeMethod?.Invoke(result, null);
-                    changeObjMethod?.Invoke(result, null);
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"[ProcessParam] Error processing {type.Name}: {ex.Message}");
-                    Debug.LogError($"[ProcessParam] Stack trace: {ex.StackTrace}");
-                }
+            methods[1]?.Invoke(instance, new object[] { layers });
+            methods[2]?.Invoke(instance, new object[] { parameters });
+            methods[3]?.Invoke(instance, new object[] { parameters });
+            methods[4]?.Invoke(instance, new object[] { menu, param, parameters, menuPath });
+            methods[5]?.Invoke(instance, null);
+            methods[6]?.Invoke(instance, new object[] { delPath });
+        }
+
+        // フィールドがstaticかinstanceかを判定してアクセスするヘルパーメソッド
+        private static TFieldType GetFieldValue<TFieldType>(
+            System.Reflection.FieldInfo field,
+            object instance
+        )
+            where TFieldType : class
+        {
+            if (field == null)
+                return null;
+
+            if (field.IsStatic)
+            {
+                return field.GetValue(null) as TFieldType;
+            }
+            else
+            {
+                return field.GetValue(instance) as TFieldType;
             }
         }
 
@@ -274,7 +297,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                 new()
                 {
                     condition = () => true,
-                    processAction = () => ProcessParam<Default>(descriptor),
+                    processAction = () => ProcessParam<Core>(descriptor),
                 },
                 new()
                 {
@@ -288,7 +311,9 @@ namespace jp.illusive_isc.MizukiOptimizer
                     afterAction = () =>
                     {
                         if (TailFlg1)
-                            Utils.DestroyObj(descriptor.transform.Find("tail_ribbon"));
+                            MizukiOptimizerBase.DestroyObj(
+                                descriptor.transform.Find("tail_ribbon")
+                            );
                     },
                 },
                 new()
@@ -305,12 +330,14 @@ namespace jp.illusive_isc.MizukiOptimizer
                         if (descriptor.transform.Find("Advanced/Particle/4"))
                             if (questFlg1)
                             {
-                                Utils.DestroyObj(
+                                MizukiOptimizerBase.DestroyObj(
                                     descriptor.transform.Find(
                                         "Armature/Hips/Spine/Chest/Neck/Head/headphone_particle"
                                     )
                                 );
-                                Utils.DestroyObj(descriptor.transform.Find("Advanced/Particle/4"));
+                                MizukiOptimizerBase.DestroyObj(
+                                    descriptor.transform.Find("Advanced/Particle/4")
+                                );
                             }
                     },
                 },
@@ -366,6 +393,16 @@ namespace jp.illusive_isc.MizukiOptimizer
                 },
                 new()
                 {
+                    condition = () => HandTrailFlg,
+                    processAction = () => ProcessParam<HandTrail>(descriptor),
+                },
+                new()
+                {
+                    condition = () => NailTrailFlg,
+                    processAction = () => ProcessParam<NailTrail>(descriptor),
+                },
+                new()
+                {
                     condition = () => PenCtrlFlg,
                     processAction = () => ProcessParam<PenCtrl>(descriptor),
                 },
@@ -409,47 +446,24 @@ namespace jp.illusive_isc.MizukiOptimizer
             if (body_b)
                 if (body_b.TryGetComponent<SkinnedMeshRenderer>(out var body_bSMR))
                 {
-                    Utils.SetWeight(
+                    MizukiOptimizerBase.SetWeight(
                         body_bSMR,
                         "Foot_heel_OFF_____足_ヒールオフ",
                         heelFlg1 || heelFlg2 ? 0 : 100
                     );
-                    Utils.SetWeight(body_bSMR, "Foot_Hiheel_____足_ハイヒール", heelFlg2 ? 100 : 0);
+                    MizukiOptimizerBase.SetWeight(
+                        body_bSMR,
+                        "Foot_Hiheel_____足_ハイヒール",
+                        heelFlg2 ? 100 : 0
+                    );
                 }
             foreach (var config in GetParamConfigs(descriptor))
             {
                 if (config.condition())
-                {
                     config.processAction();
-                }
                 config.afterAction?.Invoke();
             }
 
-            if (IKUSIA_emote && IKUSIA_emote1)
-            {
-                foreach (var control in menu.controls)
-                    if (control.name == "IKUSIA_emote")
-                        foreach (var control2 in control.subMenu.controls)
-                            if (control2.name == "姿勢変更")
-                                foreach (var ctl in control2.subMenu.controls)
-                                    if (ctl.name == "AFK")
-                                    {
-                                        menu.controls.Add(
-                                            new VRCExpressionsMenu.Control
-                                            {
-                                                name = ctl.name,
-                                                icon = ctl.icon,
-                                                type = ctl.type,
-                                                parameter = ctl.parameter,
-                                                value = ctl.value,
-                                            }
-                                        );
-                                        goto BreakAllLoops;
-                                    }
-
-                                BreakAllLoops:
-                ;
-            }
             if (IKUSIA_emote)
                 foreach (var control in menu.controls)
                     if (control.name == "IKUSIA_emote")
@@ -571,16 +585,18 @@ namespace jp.illusive_isc.MizukiOptimizer
                     }
                 }
 
-                if (control.subMenu != null)
+                if (control.type == VRCExpressionsMenu.Control.ControlType.SubMenu)
                 {
                     RemoveUnusedMenuControls(control.subMenu, param);
-                    if (control.subMenu.controls.Count > 0)
-                    {
-                        shouldRemove = false;
-                    }
                 }
 
-                if (shouldRemove)
+                if (
+                    shouldRemove
+                    || (
+                        control.type == VRCExpressionsMenu.Control.ControlType.SubMenu
+                        && control.subMenu.controls.Count == 0
+                    )
+                )
                 {
                     menu.controls.RemoveAt(i);
                 }

@@ -9,7 +9,7 @@ using UnityEditor.Animations;
 namespace jp.illusive_isc.MizukiOptimizer
 {
     [AddComponentMenu("")]
-    internal class Collider : Utils
+    internal class Collider : MizukiOptimizerBase
     {
         HashSet<string> paramList = new();
         VRCAvatarDescriptor descriptor;
