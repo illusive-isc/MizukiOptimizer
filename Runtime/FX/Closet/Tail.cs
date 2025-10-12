@@ -11,7 +11,7 @@ namespace jp.illusive_isc.MizukiOptimizer
     {
         VRCAvatarDescriptor descriptor;
         AnimatorController animator;
-        private static readonly List<string> MenuParameters = new() { "tail_Ground" };
+        private static readonly List<string> Parameters = new() { "tail_Ground" };
 
         public Tail Initialize(
             VRCAvatarDescriptor descriptor,
@@ -32,7 +32,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                     if (state.state.motion is BlendTree blendTree)
                     {
                         blendTree.children = blendTree
-                            .children.Where(c => CheckBT(c.motion, MenuParameters))
+                            .children.Where(c => CheckBT(c.motion, Parameters))
                             .ToArray();
                     }
                 }
@@ -43,7 +43,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         public Tail DeleteParam()
         {
             animator.parameters = animator
-                .parameters.Where(parameter => !MenuParameters.Contains(parameter.name))
+                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
                 .ToArray();
             return this;
         }

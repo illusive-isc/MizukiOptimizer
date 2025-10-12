@@ -25,7 +25,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         bool clothFlg8;
         bool heelFlg1;
         bool heelFlg2;
-        private static readonly List<string> MenuParameters = new()
+        private static readonly List<string> Parameters = new()
         {
             "accesary",
             "boots",
@@ -68,7 +68,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                     if (state.state.motion is BlendTree blendTree)
                     {
                         blendTree.children = blendTree
-                            .children.Where(c => CheckBT(c.motion, MenuParameters))
+                            .children.Where(c => CheckBT(c.motion, Parameters))
                             .ToArray();
                     }
                 }
@@ -79,7 +79,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         public Cloth DeleteParam()
         {
             animator.parameters = animator
-                .parameters.Where(parameter => !MenuParameters.Contains(parameter.name))
+                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
                 .ToArray();
             return this;
         }
@@ -90,7 +90,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         )
         {
             param.parameters = param
-                .parameters.Where(parameter => !MenuParameters.Contains(parameter.name))
+                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
                 .ToArray();
 
             foreach (var control1 in menu.controls)

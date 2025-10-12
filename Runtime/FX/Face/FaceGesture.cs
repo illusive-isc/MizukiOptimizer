@@ -23,7 +23,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         public bool nadeFlg = false;
         public bool blinkFlg = false;
         private static readonly List<string> Layers = new() { "LeftHand", "RightHand" };
-        private static readonly List<string> MenuParameters = new()
+        private static readonly List<string> Parameters = new()
         {
             "FaceLock",
             "Face_variation",

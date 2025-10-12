@@ -215,15 +215,19 @@ namespace jp.illusive_isc.MizukiOptimizer
 
             if (!methodCache.TryGetValue(type, out var methods))
             {
+                var bindingFlags = System.Reflection.BindingFlags.Public
+                    | System.Reflection.BindingFlags.NonPublic
+                    | System.Reflection.BindingFlags.Instance;
+
                 methods = new[]
                 {
-                    type.GetMethod("Initialize"),
-                    type.GetMethod("DeleteFx"),
-                    type.GetMethod("DeleteFxBT"),
-                    type.GetMethod("DeleteParam"),
-                    type.GetMethod("DeleteVRCExpressions"),
-                    type.GetMethod("ParticleOptimize"),
-                    type.GetMethod("ChangeObj"),
+                    type.GetMethod("Initialize", bindingFlags),
+                    type.GetMethod("DeleteFx", bindingFlags),
+                    type.GetMethod("DeleteFxBT", bindingFlags),
+                    type.GetMethod("DeleteParam", bindingFlags),
+                    type.GetMethod("DeleteVRCExpressions", bindingFlags),
+                    type.GetMethod("ParticleOptimize", bindingFlags),
+                    type.GetMethod("ChangeObj", bindingFlags),
                 };
                 methodCache[type] = methods;
             }
@@ -306,9 +310,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                                         "Armature/Hips/Spine/Chest/Neck/Head/headphone_particle"
                                     )
                                 );
-                                Utils.DestroyObj(
-                                    descriptor.transform.Find("Advanced/Particle/4")
-                                );
+                                Utils.DestroyObj(descriptor.transform.Find("Advanced/Particle/4"));
                             }
                     },
                 },
@@ -412,11 +414,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                         "Foot_heel_OFF_____足_ヒールオフ",
                         heelFlg1 || heelFlg2 ? 0 : 100
                     );
-                    Utils.SetWeight(
-                        body_bSMR,
-                        "Foot_Hiheel_____足_ハイヒール",
-                        heelFlg2 ? 100 : 0
-                    );
+                    Utils.SetWeight(body_bSMR, "Foot_Hiheel_____足_ハイヒール", heelFlg2 ? 100 : 0);
                 }
             foreach (var config in GetParamConfigs(descriptor))
             {

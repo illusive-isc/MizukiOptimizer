@@ -25,7 +25,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         bool HairFlg51;
         bool HairFlg6;
         bool tailFlg;
-        private static readonly List<string> MenuParameters = new()
+        private static readonly List<string> Parameters = new()
         {
             "Object1",
             "Object2",
@@ -69,7 +69,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                     if (state.state.motion is BlendTree blendTree)
                     {
                         blendTree.children = blendTree
-                            .children.Where(c => CheckBT(c.motion, MenuParameters))
+                            .children.Where(c => CheckBT(c.motion, Parameters))
                             .ToArray();
                     }
                 }
@@ -80,7 +80,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         public Hair DeleteParam()
         {
             animator.parameters = animator
-                .parameters.Where(parameter => !MenuParameters.Contains(parameter.name))
+                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
                 .ToArray();
             return this;
         }
@@ -91,7 +91,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         )
         {
             param.parameters = param
-                .parameters.Where(parameter => !MenuParameters.Contains(parameter.name))
+                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
                 .ToArray();
             foreach (var control1 in menu.controls)
             {

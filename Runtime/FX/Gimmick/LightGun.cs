@@ -17,7 +17,7 @@ namespace jp.illusive_isc.MizukiOptimizer
 
         private static readonly List<string> Layers = new() { "butterfly" };
 
-        private static readonly List<string> MenuParameters = new()
+        private static readonly List<string> Parameters = new()
         {
             "LightGun",
             "LightStrength",
@@ -101,7 +101,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                 .parameters.Where(parameter => !paramList.Contains(parameter.name))
                 .ToArray();
             animator.parameters = animator
-                .parameters.Where(parameter => !MenuParameters.Contains(parameter.name))
+                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
                 .ToArray();
             return this;
         }
@@ -116,7 +116,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                     {
                         blendTree.children = blendTree
                             .children.Where(c =>
-                                CheckBT(c.motion, paramList.Concat(MenuParameters).ToList())
+                                CheckBT(c.motion, paramList.Concat(Parameters).ToList())
                             )
                             .ToArray();
                     }
@@ -132,7 +132,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         {
             param.parameters = param
                 .parameters.Where(parameter =>
-                    !paramList.Concat(MenuParameters).Contains(parameter.name)
+                    !paramList.Concat(Parameters).Contains(parameter.name)
                 )
                 .ToArray();
 

@@ -14,7 +14,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         VRCAvatarDescriptor descriptor;
         AnimatorController animator;
 
-        private static readonly List<string> MenuParameters = new()
+        private static readonly List<string> Parameters = new()
         {
             "LightCamera",
             "LookOBJ",
@@ -35,7 +35,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         public Picture DeleteParam()
         {
             animator.parameters = animator
-                .parameters.Where(parameter => !MenuParameters.Contains(parameter.name))
+                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
                 .ToArray();
             return this;
         }
@@ -49,7 +49,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                     if (state.state.motion is BlendTree blendTree)
                     {
                         blendTree.children = blendTree
-                            .children.Where(c => CheckBT(c.motion, MenuParameters))
+                            .children.Where(c => CheckBT(c.motion, Parameters))
                             .ToArray();
                     }
                 }
@@ -63,7 +63,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         )
         {
             param.parameters = param
-                .parameters.Where(parameter => !MenuParameters.Contains(parameter.name))
+                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
                 .ToArray();
 
             foreach (var control in menu.controls)

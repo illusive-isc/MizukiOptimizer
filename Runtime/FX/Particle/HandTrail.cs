@@ -9,32 +9,42 @@ using UnityEditor.Animations;
 namespace jp.illusive_isc.MizukiOptimizer
 {
     [AddComponentMenu("")]
-    internal class Clairvoyance : Utils
+    internal class HandTrail : Utils
     {
+        HashSet<string> paramList = new();
         VRCAvatarDescriptor descriptor;
         AnimatorController animator;
 
-        private static readonly List<string> Parameters = new() { "clairvoyance" };
+        private static readonly List<string> Parameters = new()
+        {
+            "Paricle8_1",
+            "Paricle8_2",
+            "Paricle8_3",
+            "Paricle8_4",
+            "Paricle8_5",
+            "Paricle8_6",
+            "Paricle8_7",
+            "Paricle8_8",
+        };
 
-        public Clairvoyance Initialize(
-            VRCAvatarDescriptor descriptor,
-            AnimatorController animator
-        )
+        public HandTrail Initialize(VRCAvatarDescriptor descriptor, AnimatorController animator)
         {
             this.descriptor = descriptor;
             this.animator = animator;
             return this;
         }
 
-        public Clairvoyance DeleteParam()
+        public void DeleteParam()
         {
+            animator.parameters = animator
+                .parameters.Where(parameter => !paramList.Contains(parameter.name))
+                .ToArray();
             animator.parameters = animator
                 .parameters.Where(parameter => !Parameters.Contains(parameter.name))
                 .ToArray();
-            return this;
         }
 
-        public Clairvoyance DeleteFxBT()
+        public void DeleteFxBT()
         {
             foreach (var layer in animator.layers.Where(layer => layer.name == "MainCtrlTree"))
             {
@@ -43,32 +53,35 @@ namespace jp.illusive_isc.MizukiOptimizer
                     if (state.state.motion is BlendTree blendTree)
                     {
                         blendTree.children = blendTree
-                            .children.Where(c => CheckBT(c.motion, Parameters))
+                            .children.Where(c =>
+                                CheckBT(c.motion, paramList.Concat(Parameters).ToList())
+                            )
                             .ToArray();
                     }
                 }
             }
-            return this;
         }
 
-        public Clairvoyance DeleteVRCExpressions(
+        public HandTrail DeleteVRCExpressions(
             VRCExpressionsMenu menu,
             VRCExpressionParameters param
         )
         {
             param.parameters = param
-                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
+                .parameters.Where(parameter =>
+                    !paramList.Concat(Parameters).Contains(parameter.name)
+                )
                 .ToArray();
 
             foreach (var control in menu.controls)
             {
-                if (control.name == "Gimmick")
+                if (control.name == "Particle")
                 {
                     var expressionsSubMenu = control.subMenu;
 
                     foreach (var control2 in expressionsSubMenu.controls)
                     {
-                        if (control2.name == "Clairvoyance")
+                        if (control2.name == "Particle Free")
                         {
                             expressionsSubMenu.controls.Remove(control2);
                             break;
@@ -81,9 +94,9 @@ namespace jp.illusive_isc.MizukiOptimizer
             return this;
         }
 
-        public Clairvoyance ChangeObj()
+        public HandTrail ChangeObj()
         {
-            DestroyObj(descriptor.transform.Find("Advanced/clairvoyance"));
+            DestroyObj(descriptor.transform.Find("Particle"));
             return this;
         }
     }
