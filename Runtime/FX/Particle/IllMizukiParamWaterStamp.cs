@@ -14,15 +14,9 @@ namespace jp.illusive_isc.MizukiOptimizer
         VRCAvatarDescriptor descriptor;
         AnimatorController animator;
 
-        private static readonly List<string> MenuParameters = new()
-        {
-            "Particle2",
-            "WaterFoot_R",
-            "WaterFoot_L",
-            "Grounded",
-        };
+        private static readonly List<string> MenuParameters = new() { "Particle4" };
 
-        public IllMizukiParamWaterStamp Initialize(
+        public IllMizukiParamFootStamp Initialize(
             VRCAvatarDescriptor descriptor,
             AnimatorController animator
         )
@@ -32,7 +26,7 @@ namespace jp.illusive_isc.MizukiOptimizer
             return this;
         }
 
-        public IllMizukiParamWaterStamp DeleteParam()
+        public IllMizukiParamFootStamp DeleteParam()
         {
             animator.parameters = animator
                 .parameters.Where(parameter => !MenuParameters.Contains(parameter.name))
@@ -40,7 +34,7 @@ namespace jp.illusive_isc.MizukiOptimizer
             return this;
         }
 
-        public IllMizukiParamWaterStamp DeleteFxBT()
+        public IllMizukiParamFootStamp DeleteFxBT()
         {
             foreach (var layer in animator.layers.Where(layer => layer.name == "MainCtrlTree"))
             {
@@ -57,7 +51,7 @@ namespace jp.illusive_isc.MizukiOptimizer
             return this;
         }
 
-        public IllMizukiParamWaterStamp DeleteVRCExpressions(
+        public IllMizukiParamFootStamp DeleteVRCExpressions(
             VRCExpressionsMenu menu,
             VRCExpressionParameters param
         )
@@ -74,7 +68,7 @@ namespace jp.illusive_isc.MizukiOptimizer
 
                     foreach (var control2 in expressionsSubMenu.controls)
                     {
-                        if (control2.name == "water_stamp")
+                        if (control2.name == "Foot_stamp")
                         {
                             expressionsSubMenu.controls.Remove(control2);
                             break;
@@ -87,9 +81,9 @@ namespace jp.illusive_isc.MizukiOptimizer
             return this;
         }
 
-        public IllMizukiParamWaterStamp ChangeObj()
+        public IllMizukiParamFootStamp ChangeObj()
         {
-            DestroyObj(descriptor.transform.Find("Advanced/Particle/2"));
+            DestroyObj(descriptor.transform.Find("Advanced/Particle/4"));
             return this;
         }
     }

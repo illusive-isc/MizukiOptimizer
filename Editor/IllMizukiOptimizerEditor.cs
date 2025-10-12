@@ -24,7 +24,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         SerializedProperty LightGunFlg;
         SerializedProperty WhiteBreathFlg;
         SerializedProperty BubbleBreathFlg;
-        SerializedProperty WaterStampFlg;
+        SerializedProperty FootStampFlg;
         SerializedProperty eightBitFlg;
         SerializedProperty PenCtrlFlg;
         SerializedProperty HeartGunFlg;
@@ -176,7 +176,7 @@ namespace jp.illusive_isc.MizukiOptimizer
             LightGunFlg = serializedObject.FindProperty("LightGunFlg");
             WhiteBreathFlg = serializedObject.FindProperty("WhiteBreathFlg");
             BubbleBreathFlg = serializedObject.FindProperty("BubbleBreathFlg");
-            WaterStampFlg = serializedObject.FindProperty("WaterStampFlg");
+            FootStampFlg = serializedObject.FindProperty("FootStampFlg");
             eightBitFlg = serializedObject.FindProperty("eightBitFlg");
             PenCtrlFlg = serializedObject.FindProperty("PenCtrlFlg");
             HeartGunFlg = serializedObject.FindProperty("HeartGunFlg");
@@ -381,7 +381,7 @@ namespace jp.illusive_isc.MizukiOptimizer
             EditorGUILayout.PropertyField(LightGunFlg, new GUIContent("ライトガン削除"));
             EditorGUILayout.PropertyField(WhiteBreathFlg, new GUIContent("ホワイトブレス削除"));
             EditorGUILayout.PropertyField(BubbleBreathFlg, new GUIContent("バブルブレス削除"));
-            EditorGUILayout.PropertyField(WaterStampFlg, new GUIContent("ウォータースタンプ削除"));
+            EditorGUILayout.PropertyField(FootStampFlg, new GUIContent("足跡削除"));
             EditorGUILayout.PropertyField(eightBitFlg, new GUIContent("8bit削除"));
             EditorGUILayout.PropertyField(PenCtrlFlg, new GUIContent("ペン操作削除"));
             EditorGUILayout.PropertyField(HeartGunFlg, new GUIContent("ハートガン削除"));
@@ -451,7 +451,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                     LightGunFlg.boolValue = true;
                     WhiteBreathFlg.boolValue = true;
                     BubbleBreathFlg.boolValue = true;
-                    WaterStampFlg.boolValue = true;
+                    FootStampFlg.boolValue = true;
                     eightBitFlg.boolValue = true;
                     PenCtrlFlg.boolValue = true;
                     HeartGunFlg.boolValue = true;
