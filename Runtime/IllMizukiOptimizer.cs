@@ -103,7 +103,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         private bool BubbleBreathFlg = false;
 
         [SerializeField]
-        private bool WaterStampFlg = false;
+        private bool FootStampFlg = false;
 
         [SerializeField]
         private bool eightBitFlg = false;
@@ -392,7 +392,7 @@ namespace jp.illusive_isc.MizukiOptimizer
             {
                 ["InitializeAssets"] = InitializeAssets(descriptor),
                 ["editProcessing"] = Edit(descriptor),
-                ["FinalizeAssets"] = FinalizeAssets(descriptor)
+                ["FinalizeAssets"] = FinalizeAssets(descriptor),
             };
             stopwatch.Stop();
             Debug.Log(
@@ -412,8 +412,16 @@ namespace jp.illusive_isc.MizukiOptimizer
             if (body_b)
                 if (body_b.TryGetComponent<SkinnedMeshRenderer>(out var body_bSMR))
                 {
-                    IllMizukiUtils.SetWeight(body_bSMR, "Foot_heel_OFF_____足_ヒールオフ", heelFlg1 || heelFlg2 ? 0 : 100);
-                    IllMizukiUtils.SetWeight(body_bSMR, "Foot_Hiheel_____足_ハイヒール", heelFlg2 ? 100 : 0);
+                    IllMizukiUtils.SetWeight(
+                        body_bSMR,
+                        "Foot_heel_OFF_____足_ヒールオフ",
+                        heelFlg1 || heelFlg2 ? 0 : 100
+                    );
+                    IllMizukiUtils.SetWeight(
+                        body_bSMR,
+                        "Foot_Hiheel_____足_ハイヒール",
+                        heelFlg2 ? 100 : 0
+                    );
                 }
             foreach (var config in GetParamConfigs(descriptor))
             {

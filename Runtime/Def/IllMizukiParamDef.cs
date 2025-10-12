@@ -210,14 +210,43 @@ namespace jp.illusive_isc.MizukiOptimizer
         //                         CheckBT(c.motion, paramList.Concat(MenuParametersOnly).ToList())
         //                     )
         //                     .ToArray();
-            //             }
-            //         }
-            //         control.subMenu = expressionsSubMenu;
-            //         break;
-            //     }
-            // }
-            return this;
-        }
+        //             }
+        //         }
+        //     }
+        //     return this;
+        // }
+
+        // public IllMizukiParamDef DeleteParam()
+        // {
+        //     animator.parameters = animator
+        //         .parameters.Where(parameter => !paramList.Contains(parameter.name))
+        //         .ToArray();
+        //     animator.parameters = animator
+        //         .parameters.Where(parameter => !MenuParameters.Contains(parameter.name))
+        //         .ToArray();
+        //     return this;
+        // }
+
+        // public IllMizukiParamDef DeleteVRCExpressions(
+        //     VRCExpressionsMenu menu,
+        //     VRCExpressionParameters param
+        // )
+        // {
+        //     param.parameters = param
+        //         .parameters.Where(parameter =>
+        //             !paramList.Concat(MenuParameters).Contains(parameter.name)
+        //         )
+        //         .ToArray();
+
+        //     foreach (var parameter in param.parameters)
+        //     {
+        //         if (NotSyncParameters.Contains(parameter.name))
+        //         {
+        //             parameter.networkSynced = false;
+        //         }
+        //     }
+        //     return this;
+        // }
 
         public IllMizukiParamDef ChangeObj()
         {

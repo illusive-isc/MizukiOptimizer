@@ -89,37 +89,39 @@ namespace jp.illusive_isc.MizukiOptimizer
             return this;
         }
 
-        public IllMizukiParamBreastSize DestroyObj()
+        public IllMizukiParamBreastSize ChangeObj()
         {
             var Body_b = descriptor.transform.Find("Body_b");
             if (Body_b)
                 if (Body_b.TryGetComponent<SkinnedMeshRenderer>(out var Body_bSMR))
                 {
-                    Body_bSMR.SetBlendShapeWeight(1, breastSizeFlg1 ? 100 : 0);
-                    Body_bSMR.SetBlendShapeWeight(2, breastSizeFlg2 ? 100 : 0);
-                    Body_bSMR.SetBlendShapeWeight(3, breastSizeFlg3 ? 100 : 0);
+                    SetWeight(Body_bSMR, "Breast_small_____胸_小", breastSizeFlg1 ? 100 : 0);
+                    SetWeight(Body_bSMR, "Breast_Big_____胸_大", breastSizeFlg2 ? 50 : 0);
+                    SetWeight(Body_bSMR, "Breast_Big_____胸_大", breastSizeFlg3 ? 100 : 0);
                 }
-            var acce = descriptor.transform.Find("acce");
-            if (acce)
-                if (acce.TryGetComponent<SkinnedMeshRenderer>(out var acceSMR))
+            var maid = descriptor.transform.Find("Maid");
+            if (maid)
+                if (maid.TryGetComponent<SkinnedMeshRenderer>(out var maidSMR))
                 {
-                    acceSMR.SetBlendShapeWeight(0, breastSizeFlg1 ? 100 : 0);
-                    acceSMR.SetBlendShapeWeight(
-                        1,
-                        breastSizeFlg2 ? 100
-                            : breastSizeFlg3 ? 200
+                    SetWeight(maidSMR, "Breast_small_____胸_小", breastSizeFlg1 ? 100 : 0);
+                    SetWeight(
+                        maidSMR,
+                        "Breast_Big_____胸_大",
+                        breastSizeFlg2 ? 50
+                            : breastSizeFlg3 ? 100
                             : 0
                     );
                 }
-            var cloth = descriptor.transform.Find("cloth");
-            if (cloth)
-                if (cloth.TryGetComponent<SkinnedMeshRenderer>(out var clothSMR))
+            var outer = descriptor.transform.Find("Outer");
+            if (outer)
+                if (outer.TryGetComponent<SkinnedMeshRenderer>(out var outerSMR))
                 {
-                    clothSMR.SetBlendShapeWeight(0, breastSizeFlg1 ? 100 : 0);
-                    clothSMR.SetBlendShapeWeight(
-                        1,
-                        breastSizeFlg2 ? 100
-                            : breastSizeFlg3 ? 202
+                    SetWeight(outerSMR, "Breast_small_____胸_小", breastSizeFlg1 ? 100 : 0);
+                    SetWeight(
+                        outerSMR,
+                        "Breast_Big_____胸_大",
+                        breastSizeFlg2 ? 50
+                            : breastSizeFlg3 ? 100
                             : 0
                     );
                 }
@@ -133,14 +135,6 @@ namespace jp.illusive_isc.MizukiOptimizer
                             : breastSizeFlg3 ? 200
                             : 0
                     );
-                }
-            var underwear = descriptor.transform.Find("underwear");
-            if (underwear)
-                if (underwear.TryGetComponent<SkinnedMeshRenderer>(out var underwearSMR))
-                {
-                    underwearSMR.SetBlendShapeWeight(0, breastSizeFlg1 ? 100 : 0);
-                    underwearSMR.SetBlendShapeWeight(1, breastSizeFlg2 ? 100 : 0);
-                    underwearSMR.SetBlendShapeWeight(2, breastSizeFlg3 ? 100 : 0);
                 }
             return this;
         }

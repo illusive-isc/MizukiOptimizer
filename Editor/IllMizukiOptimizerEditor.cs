@@ -290,8 +290,8 @@ namespace jp.illusive_isc.MizukiOptimizer
                 BreastSizeFlg3.boolValue = false;
             }
             EditorGUILayout.PropertyField(BreastSizeFlg1, new GUIContent("  ├ smallにする"));
-            EditorGUILayout.PropertyField(BreastSizeFlg2, new GUIContent("  ├ 100にする"));
-            EditorGUILayout.PropertyField(BreastSizeFlg3, new GUIContent("  └ 瑞希100にする"));
+            EditorGUILayout.PropertyField(BreastSizeFlg3, new GUIContent("  ├ 100にする"));
+            EditorGUILayout.PropertyField(BreastSizeFlg2, new GUIContent("  └ rurune100にする"));
             GUI.enabled = true;
             {
                 var MizukiOptimizer = (IllMizukiOptimizer)target;
