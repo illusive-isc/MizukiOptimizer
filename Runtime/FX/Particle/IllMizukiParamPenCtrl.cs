@@ -14,7 +14,6 @@ namespace jp.illusive_isc.MizukiOptimizer
         HashSet<string> paramList = new();
         VRCAvatarDescriptor descriptor;
         AnimatorController animator;
-        bool HeartGunFlg;
         private static readonly List<string> Layers = new() { "PenCtrl_R", "PenCtrl_L" };
 
         private static readonly List<string> MenuParameters = new()
@@ -34,75 +33,14 @@ namespace jp.illusive_isc.MizukiOptimizer
         {
             this.descriptor = descriptor;
             this.animator = animator;
-            this.HeartGunFlg = optimizer.HeartGunFlg;
             return this;
         }
 
         public IllMizukiParamPenCtrl DeleteFx()
         {
-            if (!HeartGunFlg)
-            {
-                foreach (
-                    var layer in animator.layers.Where(layer =>
-                        layer.name is "PenCtrl_R" or "PenCtrl_L"
-                    )
-                )
-                {
-                    layer.stateMachine.states = layer
-                        .stateMachine.states.Where(state =>
-                            !(
-                                state.state.name
-                                is "particlePen1draw R"
-                                    or "particlePen1draw off R"
-                                    or "particlePenGrabCtrl1 R"
-                                    or "PenEraserR"
-                                    or "particlePen1draw L"
-                                    or "particlePen1draw off L"
-                                    or "particlePenGrabCtrl1 L"
-                                    or "PenEraserL"
-                            )
-                        )
-                        .ToArray();
-                    var states = layer.stateMachine.states;
-                    foreach (var state in states)
-                    {
-                        if (state.state.name == "off")
-                        {
-                            state.state.transitions = state
-                                .state.transitions.Where(transition =>
-                                    !(
-                                        transition.destinationState.name
-                                        is "particlePen1draw off L"
-                                            or "particlePen1draw off R"
-                                    )
-                                )
-                                .ToArray();
-                            foreach (var transition in state.state.transitions)
-                            {
-                                if (transition.destinationState.name == "on")
-                                {
-                                    transition.conditions = transition
-                                        .conditions.Where(condition =>
-                                            condition.parameter == "HeartGun"
-                                        )
-                                        .ToArray();
-                                }
-                            }
-                        }
-                        if (state.state.name is "on" or "Head 0" or "Head" or "shot 0")
-                            state.state.transitions = state
-                                .state.transitions.Where(transition => !transition.isExit)
-                                .ToArray();
-                    }
-                    layer.stateMachine.states = states;
-                }
-            }
-            else
-            {
-                animator.layers = animator
-                    .layers.Where(layer => !Layers.Contains(layer.name))
-                    .ToArray();
-            }
+            animator.layers = animator
+                .layers.Where(layer => !Layers.Contains(layer.name))
+                .ToArray();
 
             return this;
         }
