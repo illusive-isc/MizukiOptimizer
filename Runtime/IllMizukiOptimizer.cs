@@ -349,11 +349,6 @@ namespace jp.illusive_isc.MizukiOptimizer
                 },
                 new()
                 {
-                    condition = () => BubbleBreathFlg,
-                    processAction = () => ProcessParam<IllMizukiParamBubbleBreath>(descriptor),
-                },
-                new()
-                {
                     condition = () => FootStampFlg,
                     processAction = () => ProcessParam<IllMizukiParamFootStamp>(descriptor),
                 },
