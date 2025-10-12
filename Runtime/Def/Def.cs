@@ -68,17 +68,16 @@ namespace jp.illusive_isc.MizukiOptimizer
             "blink",
         };
 
-        public Default Initialize(
+        public void Initialize(
             VRCAvatarDescriptor descriptor,
             AnimatorController animator
         )
         {
             this.descriptor = descriptor;
             this.animator = animator;
-            return this;
         }
 
-        public Default DeleteFx()
+        public void DeleteFx()
         {
             foreach (var layer in animator.layers)
             {
@@ -194,10 +193,9 @@ namespace jp.illusive_isc.MizukiOptimizer
                 }
             }
 
-            return this;
         }
 
-        // public Default DeleteFxBT()
+        // public void DeleteFxBT()
         // {
         //     foreach (var layer in animator.layers.Where(layer => layer.name == "MainCtrlTree"))
         //     {
@@ -216,7 +214,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         //     return this;
         // }
 
-        // public Default DeleteParam()
+        // public void DeleteParam()
         // {
         //     animator.parameters = animator
         //         .parameters.Where(parameter => !paramList.Contains(parameter.name))
@@ -227,7 +225,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         //     return this;
         // }
 
-        // public Default DeleteVRCExpressions(
+        // public void DeleteVRCExpressions(
         //     VRCExpressionsMenu menu,
         //     VRCExpressionParameters param
         // )
@@ -248,7 +246,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         //     return this;
         // }
 
-        public Default ChangeObj()
+        public void ChangeObj()
         {
             // DestroyObj(descriptor.transform.Find("Advanced/Object"));
             // DestroyObj(descriptor.transform.Find("Advanced/FaceEffect"));
@@ -259,10 +257,9 @@ namespace jp.illusive_isc.MizukiOptimizer
             // DestroyObj(descriptor.transform.Find("Advanced/Gimmick2/7"));
             DestroyObj(descriptor.transform.Find("Advanced/cameraLight&eyeLookHide"));
 
-            return this;
         }
 
-        public Default ParticleOptimize()
+        private Default ParticleOptimize()
         {
             SetMaxParticle("Advanced/Particle/1/breath", 100);
             SetMaxParticle("Advanced/Particle/2/WaterFoot_R/WaterFoot2/WaterFoot3", 10);
