@@ -173,7 +173,7 @@ namespace jp.illusive_isc.MizukiOptimizer
             RemoveMenuItemRecursivelyInternal(menu, menuPath, 0);
         }
 
-        private bool RemoveMenuItemRecursivelyInternal(
+        protected bool RemoveMenuItemRecursivelyInternal(
             VRCExpressionsMenu menu,
             List<string> menuPath,
             int currentDepth

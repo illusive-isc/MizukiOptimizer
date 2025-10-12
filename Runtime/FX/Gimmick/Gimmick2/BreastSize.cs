@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
-using VRC.SDK3.Avatars.ScriptableObjects;
 #if UNITY_EDITOR
 using UnityEditor.Animations;
 
@@ -11,16 +9,14 @@ namespace jp.illusive_isc.MizukiOptimizer
     [AddComponentMenu("")]
     internal class BreastSize : MizukiOptimizerBase
     {
-        VRCAvatarDescriptor descriptor;
-        AnimatorController animator;
-
         bool breastSizeFlg1,
             breastSizeFlg2,
             breastSizeFlg3;
 
-        private static readonly List<string> Parameters = new() { "BreastSize" };
+        internal static new readonly List<string> Parameters = new() { "BreastSize" };
+        internal static new readonly List<string> menuPath = new() { "Gimmick2", "Breast_size" };
 
-        public BreastSize Initialize(
+        internal void Initialize(
             VRCAvatarDescriptor descriptor,
             AnimatorController animator,
             MizukiOptimizer optimizer
@@ -31,65 +27,9 @@ namespace jp.illusive_isc.MizukiOptimizer
             breastSizeFlg1 = optimizer.BreastSizeFlg1;
             breastSizeFlg2 = optimizer.BreastSizeFlg2;
             breastSizeFlg3 = optimizer.BreastSizeFlg3;
-            return this;
         }
 
-        public BreastSize DeleteParam()
-        {
-            animator.parameters = animator
-                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
-                .ToArray();
-            return this;
-        }
-
-        public BreastSize DeleteFxBT()
-        {
-            foreach (var layer in animator.layers.Where(layer => layer.name == "MainCtrlTree"))
-            {
-                foreach (var state in layer.stateMachine.states)
-                {
-                    if (state.state.motion is BlendTree blendTree)
-                    {
-                        blendTree.children = blendTree
-                            .children.Where(c => CheckBT(c.motion, Parameters))
-                            .ToArray();
-                    }
-                }
-            }
-            return this;
-        }
-
-        public BreastSize DeleteVRCExpressions(
-            VRCExpressionsMenu menu,
-            VRCExpressionParameters param
-        )
-        {
-            param.parameters = param
-                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
-                .ToArray();
-
-            foreach (var control in menu.controls)
-            {
-                if (control.name == "Gimmick")
-                {
-                    var expressionsSubMenu = control.subMenu;
-
-                    foreach (var control2 in expressionsSubMenu.controls)
-                    {
-                        if (control2.name == "Breast_size")
-                        {
-                            expressionsSubMenu.controls.Remove(control2);
-                            break;
-                        }
-                    }
-                    control.subMenu = expressionsSubMenu;
-                    break;
-                }
-            }
-            return this;
-        }
-
-        public BreastSize ChangeObj()
+        internal new void ChangeObj(List<string> delPath)
         {
             var Body_b = descriptor.transform.Find("Body_b");
             if (Body_b)
@@ -136,7 +76,6 @@ namespace jp.illusive_isc.MizukiOptimizer
                             : 0
                     );
                 }
-            return this;
         }
     }
 }

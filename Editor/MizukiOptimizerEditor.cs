@@ -18,12 +18,18 @@ namespace jp.illusive_isc.MizukiOptimizer
         SerializedProperty TailFlg;
         SerializedProperty TPSFlg;
         SerializedProperty ClairvoyanceFlg;
+        SerializedProperty JointBallFlg;
+        SerializedProperty TeleportFlg;
+        SerializedProperty AvatarLightFlg;
         SerializedProperty colliderJumpFlg;
         SerializedProperty pictureFlg;
         SerializedProperty BreastSizeFlg;
         SerializedProperty LightGunFlg;
         SerializedProperty WhiteBreathFlg;
-        SerializedProperty BubbleBreathFlg;
+        SerializedProperty FreeGimmickFlg;
+        SerializedProperty drinkFlg;
+        SerializedProperty issyouFlg;
+        SerializedProperty helpFlg;
         SerializedProperty FootStampFlg;
         SerializedProperty eightBitFlg;
         SerializedProperty PenCtrlFlg;
@@ -45,6 +51,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         SerializedProperty IKUSIA_emote;
         SerializedProperty heelFlg1;
         SerializedProperty heelFlg2;
+        SerializedProperty FreeClothFlg;
         SerializedProperty ClothFlg1;
         SerializedProperty ClothFlg2;
         SerializedProperty ClothFlg3;
@@ -168,16 +175,23 @@ namespace jp.illusive_isc.MizukiOptimizer
             // フィールド名は元のクラスの変数名と一致させる
             statusFlg = serializedObject.FindProperty("statusFlg");
             ClothFlg = serializedObject.FindProperty("ClothFlg");
+            FreeClothFlg = serializedObject.FindProperty("FreeClothFlg");
             HairFlg = serializedObject.FindProperty("HairFlg");
             TailFlg = serializedObject.FindProperty("TailFlg");
             TPSFlg = serializedObject.FindProperty("TPSFlg");
             ClairvoyanceFlg = serializedObject.FindProperty("ClairvoyanceFlg");
+            JointBallFlg = serializedObject.FindProperty("JointBallFlg");
+            TeleportFlg = serializedObject.FindProperty("TeleportFlg");
+            AvatarLightFlg = serializedObject.FindProperty("AvatarLightFlg");
             colliderJumpFlg = serializedObject.FindProperty("colliderJumpFlg");
             pictureFlg = serializedObject.FindProperty("pictureFlg");
             BreastSizeFlg = serializedObject.FindProperty("BreastSizeFlg");
             LightGunFlg = serializedObject.FindProperty("LightGunFlg");
             WhiteBreathFlg = serializedObject.FindProperty("WhiteBreathFlg");
-            BubbleBreathFlg = serializedObject.FindProperty("BubbleBreathFlg");
+            FreeGimmickFlg = serializedObject.FindProperty("FreeGimmickFlg");
+            drinkFlg = serializedObject.FindProperty("drinkFlg");
+            issyouFlg = serializedObject.FindProperty("issyouFlg");
+            helpFlg = serializedObject.FindProperty("helpFlg");
             FootStampFlg = serializedObject.FindProperty("FootStampFlg");
             eightBitFlg = serializedObject.FindProperty("eightBitFlg");
             PenCtrlFlg = serializedObject.FindProperty("PenCtrlFlg");
@@ -261,6 +275,7 @@ namespace jp.illusive_isc.MizukiOptimizer
             EditorGUILayout.PropertyField(heelFlg1, new GUIContent("ヒールON"));
             EditorGUILayout.PropertyField(heelFlg2, new GUIContent("ハイヒールON"));
 
+            EditorGUILayout.PropertyField(FreeClothFlg, new GUIContent("フリー衣装削除"));
             EditorGUILayout.PropertyField(ClothFlg, new GUIContent("衣装メニューのみ削除"));
             if (!ClothFlg.boolValue)
             {
@@ -370,31 +385,42 @@ namespace jp.illusive_isc.MizukiOptimizer
             GUI.enabled = true;
             GUILayout.EndVertical();
             GUILayout.BeginVertical();
-            EditorGUILayout.PropertyField(TailFlg, new GUIContent("尻尾削除"));
-            EditorGUILayout.PropertyField(TailFlg1, new GUIContent("  └ リボン削除"));
-            if (TailFlg.boolValue)
-                TailFlg1.boolValue = true;
-            EditorGUILayout.PropertyField(statusFlg, new GUIContent("ステータス削除"));
-            EditorGUILayout.PropertyField(TPSFlg, new GUIContent("TPS削除"));
-            EditorGUILayout.PropertyField(ClairvoyanceFlg, new GUIContent("透視削除"));
-            EditorGUILayout.PropertyField(
-                colliderJumpFlg,
-                new GUIContent("コライダー・ジャンプ削除")
-            );
-            EditorGUILayout.PropertyField(pictureFlg, new GUIContent("撮影ギミック削除"));
-            EditorGUILayout.PropertyField(LightGunFlg, new GUIContent("ライトガン削除"));
-            EditorGUILayout.PropertyField(WhiteBreathFlg, new GUIContent("ホワイトブレス削除"));
-            EditorGUILayout.PropertyField(BubbleBreathFlg, new GUIContent("バブルブレス削除"));
+
+            EditorGUILayout.PropertyField(eightBitFlg, new GUIContent("8bit削除"));
             EditorGUILayout.PropertyField(FootStampFlg, new GUIContent("足跡削除"));
-            EditorGUILayout.PropertyField(eightBitFlg, new GUIContent("8bit削除"));
-            EditorGUILayout.PropertyField(HandTrailFlg, new GUIContent("ハンドトレイル削除"));
-            EditorGUILayout.PropertyField(NailTrailFlg, new GUIContent("ネイルトレイル削除"));
-            EditorGUILayout.PropertyField(eightBitFlg, new GUIContent("8bit削除"));
-            EditorGUILayout.PropertyField(PenCtrlFlg, new GUIContent("ペン操作削除"));
             EditorGUILayout.PropertyField(
                 FreeParticleFlg,
                 new GUIContent("フリーパーティクル削除")
             );
+            EditorGUILayout.PropertyField(HandTrailFlg, new GUIContent("ハンドトレイル削除"));
+            EditorGUILayout.PropertyField(NailTrailFlg, new GUIContent("ネイルトレイル削除"));
+            EditorGUILayout.PropertyField(PenCtrlFlg, new GUIContent("ペン操作削除"));
+            EditorGUILayout.PropertyField(statusFlg, new GUIContent("ステータス削除"));
+            EditorGUILayout.PropertyField(WhiteBreathFlg, new GUIContent("ホワイトブレス削除"));
+
+            EditorGUILayout.PropertyField(
+                colliderJumpFlg,
+                new GUIContent("コライダー・ジャンプ削除")
+            );
+            EditorGUILayout.PropertyField(AvatarLightFlg, new GUIContent("アバターライト削除"));
+            EditorGUILayout.PropertyField(ClairvoyanceFlg, new GUIContent("透視削除"));
+            EditorGUILayout.PropertyField(JointBallFlg, new GUIContent("JointBall削除"));
+            EditorGUILayout.PropertyField(LightGunFlg, new GUIContent("ライトガン削除"));
+            EditorGUILayout.PropertyField(TeleportFlg, new GUIContent("テレポート削除"));
+            EditorGUILayout.PropertyField(TPSFlg, new GUIContent("TPS削除"));
+
+            EditorGUILayout.PropertyField(FreeGimmickFlg, new GUIContent("フリーギミック削除"));
+            EditorGUILayout.PropertyField(drinkFlg, new GUIContent("飲み物削除"));
+            EditorGUILayout.PropertyField(issyouFlg, new GUIContent("一升瓶削除"));
+            EditorGUILayout.PropertyField(helpFlg, new GUIContent("Help削除"));
+
+            EditorGUILayout.PropertyField(TailFlg, new GUIContent("尻尾削除"));
+            EditorGUILayout.PropertyField(TailFlg1, new GUIContent("  └ リボン削除"));
+            if (TailFlg.boolValue)
+                TailFlg1.boolValue = true;
+
+            EditorGUILayout.PropertyField(pictureFlg, new GUIContent("撮影ギミック削除"));
+
             EditorGUILayout.PropertyField(
                 FaceGestureFlg,
                 new GUIContent("デフォルトの表情プリセット削除(faceEmoなど使う場合)")
@@ -460,7 +486,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                     pictureFlg.boolValue = true;
                     LightGunFlg.boolValue = true;
                     WhiteBreathFlg.boolValue = true;
-                    BubbleBreathFlg.boolValue = true;
+                    FreeGimmickFlg.boolValue = true;
                     FootStampFlg.boolValue = true;
                     eightBitFlg.boolValue = true;
                     PenCtrlFlg.boolValue = true;
