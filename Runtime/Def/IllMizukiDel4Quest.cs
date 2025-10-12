@@ -16,11 +16,11 @@ namespace jp.illusive_isc.MizukiOptimizer
             {
                 var AFK_World = descriptor.transform.Find("Advanced/AFK_World/position");
 
-                IllMizukiParam.DestroyObj(AFK_World.Find("water2"));
-                IllMizukiParam.DestroyObj(AFK_World.Find("water3"));
-                IllMizukiParam.DestroyObj(AFK_World.Find("AFKIN Particle"));
-                IllMizukiParam.DestroyObj(AFK_World.Find("swim"));
-                IllMizukiParam.DestroyObj(AFK_World.Find("IdolParticle"));
+                IllMizukiUtils.DestroyObj(AFK_World.Find("water2"));
+                IllMizukiUtils.DestroyObj(AFK_World.Find("water3"));
+                IllMizukiUtils.DestroyObj(AFK_World.Find("AFKIN Particle"));
+                IllMizukiUtils.DestroyObj(AFK_World.Find("swim"));
+                IllMizukiUtils.DestroyObj(AFK_World.Find("IdolParticle"));
 
                 if (optimizer.Skirt_Root)
                     DelPBByPathArray(
@@ -169,7 +169,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                 }
 
                 if (optimizer.chest_collider1 && optimizer.chest_collider2)
-                    IllMizukiParam.DestroyComponent<VRCPhysBoneColliderBase>(
+                    IllMizukiUtils.DestroyComponent<VRCPhysBoneColliderBase>(
                         descriptor.transform.Find("Armature/Hips/Spine/Chest/chest_collider")
                     );
                 if (optimizer.upperleg_collider1)
@@ -234,7 +234,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                     );
                 }
                 if (optimizer.plane_collider)
-                    IllMizukiParam.DestroyComponent<VRCPhysBoneColliderBase>(
+                    IllMizukiUtils.DestroyComponent<VRCPhysBoneColliderBase>(
                         descriptor.transform.Find("Armature/plane_collider")
                     );
                 if (optimizer.head_collider1)
@@ -258,7 +258,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                     );
                 }
                 if (optimizer.head_collider1 && optimizer.head_collider2)
-                    IllMizukiParam.DestroyComponent<VRCPhysBoneColliderBase>(
+                    IllMizukiUtils.DestroyComponent<VRCPhysBoneColliderBase>(
                         descriptor.transform.Find(
                             "Armature/Hips/Spine/Chest/Neck/Head/head_collider"
                         )
@@ -275,7 +275,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                     );
                 }
                 if (optimizer.plane_tail_collider)
-                    IllMizukiParam.DestroyComponent<VRCPhysBoneColliderBase>(
+                    IllMizukiUtils.DestroyComponent<VRCPhysBoneColliderBase>(
                         descriptor.transform.Find("Armature/plane_tail_collider")
                     );
             }
@@ -303,7 +303,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         {
             foreach (var path in paths)
             {
-                IllMizukiParam.DestroyComponent<VRCPhysBoneBase>(descriptor.transform.Find(path));
+                IllMizukiUtils.DestroyComponent<VRCPhysBoneBase>(descriptor.transform.Find(path));
             }
         }
 
@@ -311,7 +311,7 @@ namespace jp.illusive_isc.MizukiOptimizer
         {
             foreach (var path in paths)
             {
-                IllMizukiParam.DestroyComponent<VRCPhysBoneColliderBase>(
+                IllMizukiUtils.DestroyComponent<VRCPhysBoneColliderBase>(
                     descriptor.transform.Find(path)
                 );
             }

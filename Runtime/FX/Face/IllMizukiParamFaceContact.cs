@@ -8,7 +8,7 @@ using UnityEditor.Animations;
 namespace jp.illusive_isc.MizukiOptimizer
 {
     [AddComponentMenu("")]
-    internal class IllMizukiParamFaceContact : IllMizukiParam
+    internal class IllMizukiParamFaceContact : IllMizukiUtils
     {
         VRCAvatarDescriptor descriptor;
         AnimatorController animator;

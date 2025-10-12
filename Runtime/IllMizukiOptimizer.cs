@@ -284,7 +284,7 @@ namespace jp.illusive_isc.MizukiOptimizer
                     afterAction = () =>
                     {
                         if (TailFlg1)
-                            IllMizukiParam.DestroyObj(descriptor.transform.Find("tail_ribbon"));
+                            IllMizukiUtils.DestroyObj(descriptor.transform.Find("tail_ribbon"));
                     },
                 },
                 new()
@@ -301,12 +301,12 @@ namespace jp.illusive_isc.MizukiOptimizer
                         if (descriptor.transform.Find("Advanced/Particle/4"))
                             if (questFlg1)
                             {
-                                IllMizukiParam.DestroyObj(
+                                IllMizukiUtils.DestroyObj(
                                     descriptor.transform.Find(
                                         "Armature/Hips/Spine/Chest/Neck/Head/headphone_particle"
                                     )
                                 );
-                                IllMizukiParam.DestroyObj(
+                                IllMizukiUtils.DestroyObj(
                                     descriptor.transform.Find("Advanced/Particle/4")
                                 );
                             }
@@ -354,8 +354,8 @@ namespace jp.illusive_isc.MizukiOptimizer
                 },
                 new()
                 {
-                    condition = () => WaterStampFlg,
-                    processAction = () => ProcessParam<IllMizukiParamWaterStamp>(descriptor),
+                    condition = () => FootStampFlg,
+                    processAction = () => ProcessParam<IllMizukiParamFootStamp>(descriptor),
                 },
                 new()
                 {

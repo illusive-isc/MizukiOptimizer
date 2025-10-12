@@ -9,7 +9,7 @@ using UnityEditor.Animations;
 namespace jp.illusive_isc.MizukiOptimizer
 {
     [AddComponentMenu("")]
-    internal class IllMizukiParamBubbleBreath : IllMizukiParam
+    internal class IllMizukiParamBubbleBreath : IllMizukiUtils
     {
         VRCAvatarDescriptor descriptor;
         AnimatorController animator;

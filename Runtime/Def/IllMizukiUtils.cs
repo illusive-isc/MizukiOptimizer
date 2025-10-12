@@ -7,7 +7,7 @@ using UnityEditor.Animations;
 namespace jp.illusive_isc.MizukiOptimizer
 {
     [AddComponentMenu("")]
-    internal class IllMizukiParam : ScriptableObject
+    internal class IllMizukiUtils : ScriptableObject
     {
         protected static List<string> exsistParams = new() { "TRUE", "paryi_AFK" };
         protected static readonly List<string> VRCParameters = new()
@@ -97,6 +97,18 @@ namespace jp.illusive_isc.MizukiOptimizer
             if (obj)
             {
                 DestroyObj(obj);
+            }
+        }
+
+        public static void SetWeight(SkinnedMeshRenderer obj, string weightName, float weight)
+        {
+            if (obj)
+            {
+                var blendShapeIndex = obj.sharedMesh.GetBlendShapeIndex(weightName);
+                if (blendShapeIndex != -1)
+                {
+                    obj.SetBlendShapeWeight(blendShapeIndex, weight);
+                }
             }
         }
 
