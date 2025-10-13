@@ -1,6 +1,6 @@
 {
-    "name": "jp.illusive_isc.MizukiOptimizer",
-    "rootNamespace": "jp.illusive_isc.MizukiOptimizer",
+    "name": "jp.illusive_isc.IKUSIAOverride.Mizuki",
+    "rootNamespace": "jp.illusive_isc.IKUSIAOverride.Mizuki",
     "references": [
         "com.anatawa12.avatar-optimizer.runtime"
     ],
