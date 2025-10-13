@@ -18,7 +18,13 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         public bool kamitukiFlg = false;
         public bool nadeFlg = false;
         public bool blinkFlg = false;
-        internal static new readonly List<string> Layers = new() { "Left Right Hand", "Blink_Control", "FaceCtrl", "LipSynk" };
+        internal static new readonly List<string> Layers = new()
+        {
+            "Left Right Hand",
+            "Blink_Control",
+            "FaceCtrl",
+            "LipSynk",
+        };
         internal static readonly List<string> FaceVariation = new()
         {
             "FaceVariation1",
@@ -43,7 +49,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         {
             this.descriptor = descriptor;
             this.animator = animator;
-            FaceGestureFlg = optimizer.FaceGestureFlg;
+            FaceGestureFlg = optimizer.FaceGestureFlg2;
             FaceLockFlg = optimizer.FaceLockFlg;
             FaceValFlg = optimizer.FaceValFlg;
         }

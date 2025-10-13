@@ -42,20 +42,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(controllerDef), pathDir + pathName);
 
             controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(pathDir + pathName);
-            // controller
-            //                .layers.Where(layer => layer.name == "MainCtrlTree")
-            //                .ToList()
-            //                .ForEach(layer => {
-            //                    layer.stateMachine.states.Where(state => state.state.name == "MainCtrlTree")
-            //                        .ToList()
-            //                        .ForEach(state => {
-            //                            BlendTree blendTree = state.state.motion as BlendTree;
-            //                            if (blendTree != null)
-            //                            {
-            //                                // Process the BlendTree as needed
-            //                            }
-            //                        });
-            //                });
+
             if (!menuDef)
             {
                 if (!descriptor.expressionsMenu)
@@ -109,6 +96,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                         heelFlg2 ? 100 : 0
                     );
                 }
+
             foreach (var config in GetParamConfigs(descriptor))
             {
                 if (config.condition())

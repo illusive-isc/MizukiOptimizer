@@ -85,8 +85,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         [SerializeField]
         private bool NailGaoFlg = false;
 
-        [SerializeField]
-        private bool NailGaoFlg2 = false;
+        public bool NailGaoFlg2 = false;
 
         [SerializeField]
         private bool ArmAcceFlg = false;
@@ -228,34 +227,6 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                 })
                 .ToArray();
         }
-        //         new ()
-        //                 {
-        //                     condition = () => NailGaoFlg,
-        //                     processAction = () => ProcessParam<NailGao>(descriptor),
-        //                     afterAction = () =>
-        //                     {
-        //                         var body_b = descriptor.transform.Find("Body_b");
-        //                         if (body_b)
-        //                             if (body_b.TryGetComponent<SkinnedMeshRenderer>(out var body_bSMR))
-        //                             {
-        //                                 IKUSIAOverrideCore.SetWeight(
-        //                                     body_bSMR,
-        //                                     "Extend",
-        //                                     NailGaoFlg2? 100 : 0
-        //                                 );
-        //                             }
-        // },
-        //                 },
-        //                 new()
-        //                 {
-        //                     condition = () => FaceGestureFlg || FaceLockFlg || FaceValFlg,
-        //                     processAction = () => ProcessParam<FaceGesture>(descriptor),
-        //                 },
-        //                 new()
-        //                 {
-        //                     condition = () => kamitukiFlg || nadeFlg || blinkFlg,
-        //                     processAction = () => ProcessParam<FaceContact>(descriptor),
-        //                 },
     }
 }
 #endif

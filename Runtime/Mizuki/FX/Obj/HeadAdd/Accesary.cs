@@ -13,7 +13,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         {
             "Object",
             "Head add",
-            "accessory",
+            "accesary",
         };
 
         // internal new void ChangeObj(List<string> delPath)

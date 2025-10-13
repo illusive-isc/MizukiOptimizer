@@ -268,10 +268,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             EditorGUILayout.PropertyField(StatusFlg, new GUIContent("ステータス削除"));
             EditorGUILayout.PropertyField(WhiteBreathFlg, new GUIContent("ホワイトブレス削除"));
 
-            EditorGUILayout.PropertyField(
-                ColliderFlg,
-                new GUIContent("コライダー・ジャンプ削除")
-            );
+            EditorGUILayout.PropertyField(ColliderFlg, new GUIContent("コライダー・ジャンプ削除"));
             EditorGUILayout.PropertyField(AvatarLightFlg, new GUIContent("アバターライト削除"));
             EditorGUILayout.PropertyField(ClairvoyanceFlg, new GUIContent("透視削除"));
             EditorGUILayout.PropertyField(JointBallFlg, new GUIContent("JointBall削除"));
