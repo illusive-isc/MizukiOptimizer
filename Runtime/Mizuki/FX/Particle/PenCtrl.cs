@@ -32,6 +32,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         {
             base.DeleteFx(Layers);
             DeleteBarCtrlHandHit(Parameters, "PenColor");
+            DeleteBarCtrl("BarOff 0 0 0 0", "BarOpen 0 0 0 0", "Color", "Color 0");
         }
     }
 }

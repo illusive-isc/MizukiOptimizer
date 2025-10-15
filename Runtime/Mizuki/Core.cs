@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
-using VRC.SDK3.Avatars.ScriptableObjects;
 #if UNITY_EDITOR
 using UnityEditor.Animations;
 
@@ -13,39 +11,6 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
     [AddComponentMenu("")]
     internal class Core : MizukiBase
     {
-        private static readonly List<string> NotSyncParameters = new()
-        {
-            "takasa",
-            "takasa_Toggle",
-            "Action_Mode_Reset",
-            "Action_Mode",
-            "Mirror",
-            "Mirror Toggle",
-            "paryi_change_Standing",
-            "paryi_change_Crouching",
-            "paryi_change_Prone",
-            "paryi_floating",
-            "paryi_change_all_reset",
-            "paryi_change_Mirror_S",
-            "paryi_change_Mirror_P",
-            "paryi_change_Mirror_H",
-            "paryi_change_Mirror_C",
-            "paryi_chang_Loco",
-            "paryi_Jump",
-            "paryi_Jump_cancel",
-            "paryi_change_Standing_M",
-            "paryi_change_Crouching_M",
-            "paryi_change_Prone_M",
-            "paryi_floating_M",
-            "leg fixed",
-            "JumpCollider",
-            "SpeedCollider",
-            "ColliderON",
-            "clairvoyance",
-            "TPS",
-        };
-
-        //Pet_Move_Contact
         private static readonly List<string> NotUseParameters = new() { "Mirror Toggle" };
         internal static new readonly List<string> delPath = new()
         {
@@ -58,9 +23,24 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             "Advanced/Particle/6/Head",
         };
 
+        private bool TPSFlg;
+        private bool ClairvoyanceFlg;
+
+        protected void Initialize(
+            VRCAvatarDescriptor descriptor,
+            AnimatorController paryi_FX,
+            MizukiOptimizer optimizer
+        )
+        {
+            this.descriptor = descriptor;
+            this.paryi_FX = paryi_FX;
+            TPSFlg = optimizer.TPSFlg;
+            ClairvoyanceFlg = optimizer.ClairvoyanceFlg;
+        }
+
         public new void DeleteFx(List<string> Layers)
         {
-            foreach (var layer in animator.layers)
+            foreach (var layer in paryi_FX.layers)
             {
                 var statesForTransitions = layer.stateMachine.states.ToArray();
                 var transitionsToRemove =
@@ -126,21 +106,14 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                     catch { }
                 }
 
-                foreach (var st in statesToRemove.ToArray())
-                {
-                    try
-                    {
-                        layer.stateMachine.RemoveState(st);
-                    }
-                    catch { }
-                }
+                RemoveStatesAndTransitions(layer.stateMachine, statesToRemove.ToArray());
                 if (layer.name == "butterfly")
                 {
                     foreach (var state in layer.stateMachine.states)
                     {
                         if (state.state.name == "New State" || state.state.name == "New State 0")
                         {
-                            layer.stateMachine.RemoveState(state.state);
+                            RemoveStatesAndTransitions(layer.stateMachine, state.state);
                             continue;
                         }
                         if (state.state.name == "butterfly_off")
@@ -174,83 +147,84 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                     {
                         if (state.state.name == "MainCtrlTree 0")
                         {
-                            layer.stateMachine.RemoveState(state.state);
+                            RemoveStatesAndTransitions(layer.stateMachine, state.state);
                             break;
                         }
                     }
-
-                    foreach (var state in layer.stateMachine.states)
-                    {
-                        if (state.state.motion is BlendTree blendTree)
+                    if (!(TPSFlg && ClairvoyanceFlg))
+                        foreach (var state in layer.stateMachine.states)
                         {
-                            BlendTree newBlendTree = new()
+                            if (state.state.motion is BlendTree blendTree)
                             {
-                                name = "VRMode",
-                                blendParameter = "VRMode",
-                                blendParameterY = "Blend",
-                                blendType = BlendTreeType.Simple1D,
-                                useAutomaticThresholds = false,
-                                maxThreshold = 1.0f,
-                                minThreshold = 0.0f,
-                            };
-                            blendTree.AddChild(newBlendTree);
-                            // BlendTreeの子モーションを取得
-                            var children = blendTree.children;
-
-                            // "LipSynk" のモーションがある場合、threshold を変更
-                            for (int i = 0; i < children.Length; i++)
-                            {
-                                if (children[i].motion.name == "VRMode")
+                                BlendTree newBlendTree = new()
                                 {
-                                    children[i].threshold = 1;
+                                    name = "VRMode",
+                                    blendParameter = "VRMode",
+                                    blendParameterY = "Blend",
+                                    blendType = BlendTreeType.Simple1D,
+                                    useAutomaticThresholds = false,
+                                    maxThreshold = 1.0f,
+                                    minThreshold = 0.0f,
+                                };
+                                blendTree.AddChild(newBlendTree);
+                                // BlendTreeの子モーションを取得
+                                var children = blendTree.children;
+
+                                // "LipSynk" のモーションがある場合、threshold を変更
+                                for (int i = 0; i < children.Length; i++)
+                                {
+                                    if (children[i].motion.name == "VRMode")
+                                    {
+                                        children[i].threshold = 1;
+                                    }
                                 }
-                            }
-                            // 修正した children 配列を再代入（これをしないと変更が反映されない）
-                            blendTree.children = children;
+                                // 修正した children 配列を再代入（これをしないと変更が反映されない）
+                                blendTree.children = children;
 
-                            newBlendTree.children = new ChildMotion[]
-                            {
-                                new()
+                                newBlendTree.children = new ChildMotion[]
                                 {
-                                    motion = AssetDatabase.LoadAssetAtPath<Motion>(
-                                        AssetDatabase.GUIDToAssetPath(
-                                            AssetDatabase.FindAssets("VRMode0")[0]
-                                        )
-                                    ),
-                                    threshold = 0.0f,
-                                    timeScale = 1,
-                                },
-                                new()
-                                {
-                                    motion = AssetDatabase.LoadAssetAtPath<Motion>(
-                                        AssetDatabase.GUIDToAssetPath(
-                                            AssetDatabase.FindAssets("VRMode1")[0]
-                                        )
-                                    ),
-                                    threshold = 1.0f,
-                                    timeScale = 1,
-                                },
-                            };
-                            AssetDatabase.AddObjectToAsset(newBlendTree, animator);
-                            AssetDatabase.SaveAssets();
+                                    new()
+                                    {
+                                        motion = AssetDatabase.LoadAssetAtPath<Motion>(
+                                            AssetDatabase.GUIDToAssetPath(
+                                                AssetDatabase.FindAssets("VRMode0")[0]
+                                            )
+                                        ),
+                                        threshold = 0.0f,
+                                        timeScale = 1,
+                                    },
+                                    new()
+                                    {
+                                        motion = AssetDatabase.LoadAssetAtPath<Motion>(
+                                            AssetDatabase.GUIDToAssetPath(
+                                                AssetDatabase.FindAssets("VRMode1")[0]
+                                            )
+                                        ),
+                                        threshold = 1.0f,
+                                        timeScale = 1,
+                                    },
+                                };
+                                AssetDatabase.AddObjectToAsset(newBlendTree, paryi_FX);
+                                AssetDatabase.SaveAssets();
+                            }
                         }
-                    }
                 }
             }
             // "VRMode" パラメータが Float でない場合は再設定
-            foreach (var p in animator.parameters.Where(p => p.name == "VRMode").ToList())
+            var VRMode = paryi_FX.parameters.FirstOrDefault(p => p.name == "VRMode");
+            if (VRMode != null)
             {
-                if (p.type != AnimatorControllerParameterType.Float)
+                if (VRMode.type != AnimatorControllerParameterType.Float)
                 {
-                    animator.RemoveParameter(p);
-                    animator.AddParameter("VRMode", AnimatorControllerParameterType.Float);
+                    paryi_FX.RemoveParameter(VRMode);
+                    paryi_FX.AddParameter("VRMode", AnimatorControllerParameterType.Float);
                 }
             }
         }
 
         public new void DeleteFxBT(List<string> Parameters)
         {
-            foreach (var layer in animator.layers.Where(layer => layer.name == "MainCtrlTree"))
+            foreach (var layer in paryi_FX.layers.Where(layer => layer.name == "MainCtrlTree"))
             {
                 foreach (var state in layer.stateMachine.states)
                 {
@@ -260,33 +234,6 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                             .children.Where(c => CheckBT(c.motion, NotUseParameters))
                             .ToArray();
                     }
-                }
-            }
-        }
-
-        public new void DeleteParam(List<string> Parameters)
-        {
-            animator.parameters = animator
-                .parameters.Where(parameter => !NotUseParameters.Contains(parameter.name))
-                .ToArray();
-        }
-
-        public new void EditVRCExpressions(
-            VRCExpressionsMenu menu,
-            VRCExpressionParameters param,
-            List<string> Parameters,
-            List<string> menuPath
-        )
-        {
-            param.parameters = param
-                .parameters.Where(parameter => !NotUseParameters.Contains(parameter.name))
-                .ToArray();
-
-            foreach (var parameter in param.parameters)
-            {
-                if (NotSyncParameters.Contains(parameter.name))
-                {
-                    parameter.networkSynced = false;
                 }
             }
         }

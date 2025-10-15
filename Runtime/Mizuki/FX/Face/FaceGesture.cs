@@ -43,12 +43,12 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 
         public void Initialize(
             VRCAvatarDescriptor descriptor,
-            AnimatorController animator,
+            AnimatorController paryi_FX,
             MizukiOptimizer optimizer
         )
         {
             this.descriptor = descriptor;
-            this.animator = animator;
+            this.paryi_FX = paryi_FX;
             FaceGestureFlg = optimizer.FaceGestureFlg2;
             FaceLockFlg = optimizer.FaceLockFlg;
             FaceValFlg = optimizer.FaceValFlg;
@@ -58,7 +58,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         {
             if (!FaceGestureFlg && FaceLockFlg)
                 foreach (
-                    var layer in animator.layers.Where(layer =>
+                    var layer in paryi_FX.layers.Where(layer =>
                         layer.name is "Left Right Hand" or "Blink_Control"
                     )
                 )
@@ -113,46 +113,48 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                 }
             if (!FaceGestureFlg && FaceValFlg)
                 foreach (
-                    var layer in animator.layers.Where(layer =>
+                    var layer in paryi_FX.layers.Where(layer =>
                         layer.name is "Left Right Hand" or "Blink_Control" or "FaceCtrl"
                     )
                 )
                 {
-                    layer.stateMachine.states = layer
-                        .stateMachine.states.Where(state =>
-                            !(
+                    RemoveStatesAndTransitions(
+                        layer.stateMachine,
+                        layer
+                            .stateMachine.states.Where(state =>
                                 state.state.name
-                                is "Fist L2"
-                                    or "Open L2"
-                                    or "Point L2"
-                                    or "Peace L2"
-                                    or "RockNRoll L2"
-                                    or "Gun L2"
-                                    or "Thumbs up L2"
-                                    or "Fist R2"
-                                    or "Open R2"
-                                    or "Point R2"
-                                    or "Peace R2"
-                                    or "RockNRoll R2"
-                                    or "Gun R2"
-                                    or "Thumbs up R2"
-                                    or "Fist L3"
-                                    or "Open L3"
-                                    or "Point L3"
-                                    or "Peace L3"
-                                    or "RockNRoll L3"
-                                    or "Gun L3"
-                                    or "Thumbs up L3"
-                                    or "Fist R3"
-                                    or "Open R3"
-                                    or "Point R3"
-                                    or "Peace R3"
-                                    or "RockNRoll R3"
-                                    or "Gun R3"
-                                    or "Thumbs up R3"
+                                    is "Fist L2"
+                                        or "Open L2"
+                                        or "Point L2"
+                                        or "Peace L2"
+                                        or "RockNRoll L2"
+                                        or "Gun L2"
+                                        or "Thumbs up L2"
+                                        or "Fist R2"
+                                        or "Open R2"
+                                        or "Point R2"
+                                        or "Peace R2"
+                                        or "RockNRoll R2"
+                                        or "Gun R2"
+                                        or "Thumbs up R2"
+                                        or "Fist L3"
+                                        or "Open L3"
+                                        or "Point L3"
+                                        or "Peace L3"
+                                        or "RockNRoll L3"
+                                        or "Gun L3"
+                                        or "Thumbs up L3"
+                                        or "Fist R3"
+                                        or "Open R3"
+                                        or "Point R3"
+                                        or "Peace R3"
+                                        or "RockNRoll R3"
+                                        or "Gun R3"
+                                        or "Thumbs up R3"
                             )
-                        )
-                        .ToArray();
+                            .Select(s => s.state)
+                            .ToArray()
+                    );
 
                     if (layer.name is "Blink_Control")
                     {
@@ -171,7 +173,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                         }
                         layer.stateMachine.states = states;
                     }
-                    animator.layers = animator
+                    paryi_FX.layers = paryi_FX
                         .layers.Where(layer => !("FaceCtrl" == layer.name))
                         .ToArray();
                 }
@@ -179,37 +181,13 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             if (!FaceGestureFlg)
                 return;
 
-            animator.layers = animator
+            paryi_FX.layers = paryi_FX
                 .layers.Where(layer => !Layers.Contains(layer.name))
                 .ToArray();
         }
 
-        public new void DeleteParam(List<string> Parameters)
+        public new void EditVRCExpressions(VRCExpressionsMenu menu, List<string> menuPath)
         {
-            if (FaceGestureFlg || FaceValFlg)
-                animator.parameters = animator
-                    .parameters.Where(p => !FaceVariation.Contains(p.name))
-                    .ToArray();
-            if (FaceGestureFlg || FaceLockFlg)
-                animator.parameters = animator
-                    .parameters.Where(p => !(p.name == "FaceLock"))
-                    .ToArray();
-        }
-
-        public new void EditVRCExpressions(
-            VRCExpressionsMenu menu,
-            VRCExpressionParameters param,
-            List<string> Parameters,
-            List<string> menuPath
-        )
-        {
-            if (FaceGestureFlg || FaceValFlg)
-                param.parameters = param
-                    .parameters.Where(p => !FaceVariation.Contains(p.name))
-                    .ToArray();
-            if (FaceGestureFlg || FaceLockFlg)
-                param.parameters = param.parameters.Where(p => !(p.name == "FaceLock")).ToArray();
-
             foreach (var control in menu.controls)
             {
                 if (control.name == "Gimmick")

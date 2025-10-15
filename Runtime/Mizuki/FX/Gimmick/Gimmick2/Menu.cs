@@ -19,19 +19,15 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         };
         internal static new readonly List<string> Parameters = new()
         {
-            "cameraLight&eyeLookHide",
-            "LightCamera",
-            "eyeLook",
+            "Paryi_MenuMainInt",
+            "MenuButtonGlobalToggle",
+            "MenuStart",
+            "BarType",
+            "Voice",
+            "Viseme",
         };
         internal static new readonly List<string> menuPath = new() { "Gimmick2", "MenuDesktop" };
-        internal static new readonly List<string> delPath = new()
-        {
-            "Advanced/Gimmick2/6",
-            "Advanced/LookOBJHead",
-            "Advanced/CametaLightOBJ_World",
-            "MenuGrabWorld",
-            "Menu",
-        };
+        internal static new readonly List<string> delPath = new() { "MenuGrabWorld", "Menu" };
     }
 }
 #endif

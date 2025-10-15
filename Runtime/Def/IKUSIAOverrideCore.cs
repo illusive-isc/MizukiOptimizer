@@ -12,53 +12,12 @@ namespace jp.illusive_isc.IKUSIAOverride
     public class IKUSIAOverrideCore : ScriptableObject
     {
         protected VRCAvatarDescriptor descriptor;
-        protected AnimatorController animator;
-        protected static List<string> exsistParams = new() { "TRUE", "paryi_AFK" };
+        protected AnimatorController paryi_FX;
 
         internal readonly List<string> Parameters = new();
         internal readonly List<string> menuPath = new();
         internal readonly List<string> delPath = new();
         internal readonly List<string> Layers = new();
-        protected static readonly List<string> VRCParameters = new()
-        {
-            "IsLocal",
-            "PreviewMode",
-            "Viseme",
-            "Voice",
-            "GestureLeft",
-            "GestureRight",
-            "GestureLeftWeight",
-            "GestureRightWeight",
-            "AngularY",
-            "VelocityX",
-            "VelocityY",
-            "VelocityZ",
-            "VelocityMagnitude",
-            "Upright",
-            "Grounded",
-            "Seated",
-            "AFK",
-            "TrackingType",
-            "VRMode",
-            "MuteSelf",
-            "InStation",
-            "Earmuffs",
-            "IsOnFriendsList",
-            "AvatarVersion",
-        };
-
-        protected void AddIfNotInParameters(
-            HashSet<string> paramList,
-            List<string> exeistParams,
-            string parameter,
-            bool isActive = true
-        )
-        {
-            if (isActive && !VRCParameters.Contains(parameter) && !exeistParams.Contains(parameter))
-            {
-                paramList.Add(parameter);
-            }
-        }
 
         public static void EditorOnly(Transform obj)
         {
@@ -133,16 +92,9 @@ namespace jp.illusive_isc.IKUSIAOverride
             }
         }
 
-        protected void DeleteParam(List<string> Parameters)
-        {
-            animator.parameters = animator
-                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
-                .ToArray();
-        }
-
         protected void DeleteFxBT(List<string> Parameters)
         {
-            foreach (var layer in animator.layers.Where(layer => layer.name == "MainCtrlTree"))
+            foreach (var layer in paryi_FX.layers.Where(layer => layer.name == "MainCtrlTree"))
             {
                 foreach (var state in layer.stateMachine.states)
                 {
@@ -156,19 +108,10 @@ namespace jp.illusive_isc.IKUSIAOverride
             }
         }
 
-        protected void EditVRCExpressions(
-            VRCExpressionsMenu menu,
-            VRCExpressionParameters param,
-            List<string> Parameters,
-            List<string> menuPath
-        )
+        protected void EditVRCExpressions(VRCExpressionsMenu menu, List<string> menuPath)
         {
             if (menu == null || menuPath == null || menuPath.Count == 0)
                 return;
-            // パラメーターの削除
-            param.parameters = param
-                .parameters.Where(parameter => !Parameters.Contains(parameter.name))
-                .ToArray();
             RemoveMenuItemRecursivelyInternal(menu, menuPath, 0);
         }
 
@@ -208,10 +151,10 @@ namespace jp.illusive_isc.IKUSIAOverride
             return false;
         }
 
-        protected void Initialize(VRCAvatarDescriptor descriptor, AnimatorController animator)
+        protected void Initialize(VRCAvatarDescriptor descriptor, AnimatorController paryi_FX)
         {
             this.descriptor = descriptor;
-            this.animator = animator;
+            this.paryi_FX = paryi_FX;
         }
 
         protected void ChangeObj(List<string> delPath)
@@ -222,8 +165,34 @@ namespace jp.illusive_isc.IKUSIAOverride
 
         protected void DeleteFx(List<string> Layers)
         {
-            animator.layers = animator
+            paryi_FX.layers = paryi_FX
                 .layers.Where(layer => !Layers.Contains(layer.name))
+                .ToArray();
+        }
+
+        protected void RemoveStatesAndTransitions(
+            AnimatorStateMachine stateMachine,
+            params AnimatorState[] statesToRemove
+        )
+        {
+            // Remove transitions leading to states to be removed
+            foreach (var state in stateMachine.states)
+            {
+                state.state.transitions = state
+                    .state.transitions.Where(t =>
+                        t.destinationState == null || !statesToRemove.Contains(t.destinationState)
+                    )
+                    .ToArray();
+            }
+            // Remove AnyState transitions leading to states to be removed
+            stateMachine.anyStateTransitions = stateMachine
+                .anyStateTransitions.Where(t =>
+                    t.destinationState == null || !statesToRemove.Contains(t.destinationState)
+                )
+                .ToArray();
+            // Filter out states to keep
+            stateMachine.states = stateMachine
+                .states.Where(s => !statesToRemove.Contains(s.state))
                 .ToArray();
         }
     }

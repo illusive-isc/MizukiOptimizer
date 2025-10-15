@@ -21,11 +21,17 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
     {
         protected string pathDirSuffix = "/FX/";
         protected string pathName = "paryi_FX.controller";
-        public AnimatorController controllerDef;
+        public AnimatorController paryi_FXDef;
         public VRCExpressionsMenu menuDef;
         public VRCExpressionParameters paramDef;
 
-        public AnimatorController controller;
+        public AnimatorController paryi_FX;
+
+        // var paryi_Loco = GetUseParams(baseLayers[0].animatorController as AnimatorController);
+
+        // var paryi_Gesture = GetUseParams(baseLayers[2].animatorController as AnimatorController);
+        // var paryi_Action = GetUseParams(baseLayers[3].animatorController as AnimatorController);
+        // var paryi_FX = EditFXParam(controller);
         public VRCExpressionsMenu menu;
         public VRCExpressionParameters param;
 
@@ -36,6 +42,67 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             LowerResolution,
             Delete,
         }
+
+        internal readonly List<string> NotSyncParameters = new()
+        {
+            "takasa",
+            "takasa_Toggle",
+            "Action_Mode_Reset",
+            "Action_Mode",
+            "Mirror",
+            "Mirror Toggle",
+            "paryi_change_Standing",
+            "paryi_change_Crouching",
+            "paryi_change_Prone",
+            "paryi_floating",
+            "paryi_change_all_reset",
+            "paryi_change_Mirror_S",
+            "paryi_change_Mirror_P",
+            "paryi_change_Mirror_H",
+            "paryi_change_Mirror_C",
+            "paryi_chang_Loco",
+            "paryi_Jump",
+            "paryi_Jump_cancel",
+            "paryi_change_Standing_M",
+            "paryi_change_Crouching_M",
+            "paryi_change_Prone_M",
+            "paryi_floating_M",
+            "leg fixed",
+            "JumpCollider",
+            "SpeedCollider",
+            "ColliderON",
+            "clairvoyance",
+            "TPS",
+        };
+
+        protected static List<string> exsistParams = new() { "TRUE", "paryi_AFK" };
+        protected static readonly List<string> VRCParameters = new()
+        {
+            "IsLocal",
+            "PreviewMode",
+            "Viseme",
+            "Voice",
+            "GestureLeft",
+            "GestureRight",
+            "GestureLeftWeight",
+            "GestureRightWeight",
+            "AngularY",
+            "VelocityX",
+            "VelocityY",
+            "VelocityZ",
+            "VelocityMagnitude",
+            "Upright",
+            "Grounded",
+            "Seated",
+            "AFK",
+            "TrackingType",
+            "VRMode",
+            "MuteSelf",
+            "InStation",
+            "Earmuffs",
+            "IsOnFriendsList",
+            "AvatarVersion",
+        };
 
         public TextureResizeOption textureResize = TextureResizeOption.LowerResolution;
 
@@ -67,13 +134,13 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         {
             var step4 = Stopwatch.StartNew();
             RemoveUnusedMenuControls(menu, param);
-            EditorUtility.SetDirty(controller);
+            EditorUtility.SetDirty(paryi_FX);
             MarkAllMenusDirty(menu);
             EditorUtility.SetDirty(param);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            descriptor.baseAnimationLayers[4].animatorController = controller;
+            descriptor.baseAnimationLayers[4].animatorController = paryi_FX;
             descriptor.expressionsMenu = menu;
             descriptor.expressionParameters = param;
             EditorUtility.SetDirty(descriptor);
@@ -313,7 +380,6 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                     Method,
                     type.GetMethod("DeleteFx", bindingFlags),
                     type.GetMethod("DeleteFxBT", bindingFlags),
-                    type.GetMethod("DeleteParam", bindingFlags),
                     type.GetMethod("EditVRCExpressions", bindingFlags),
                     type.GetMethod("ParticleOptimize", bindingFlags),
                     type.GetMethod("ChangeObj", bindingFlags),
@@ -346,18 +412,17 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                     var paramCount = initializeMethod.GetParameters().Length;
                     var args =
                         paramCount == 3
-                            ? new object[] { descriptor, controller, this }
-                            : new object[] { descriptor, controller };
+                            ? new object[] { descriptor, paryi_FX, this }
+                            : new object[] { descriptor, paryi_FX };
                     initializeMethod.Invoke(instance, args);
                 }
 
                 methods[1]?.Invoke(instance, new object[] { layers });
                 methods[2]?.Invoke(instance, new object[] { parameters });
-                methods[3]?.Invoke(instance, new object[] { parameters });
-                methods[4]?.Invoke(instance, new object[] { menu, param, parameters, menuPath });
-                methods[5]?.Invoke(instance, null);
-                methods[6]?.Invoke(instance, new object[] { delPath });
-                methods[7]?.Invoke(instance, new object[] { parameters });
+                methods[3]?.Invoke(instance, new object[] { menu, menuPath });
+                methods[4]?.Invoke(instance, null);
+                methods[5]?.Invoke(instance, new object[] { delPath });
+                methods[6]?.Invoke(instance, new object[] { parameters });
             }
             finally
             {
@@ -382,7 +447,36 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             }
         }
 
-        protected abstract ParamProcessConfig[] GetParamConfigs(VRCAvatarDescriptor descriptor);
+        protected ParamProcessConfig[] GetParamConfigs(
+            VRCAvatarDescriptor descriptor,
+            string TargetNamespace = "jp.illusive_isc.IKUSIAOverride.Mizuki"
+        )
+        {
+            var types = GetMizukiBaseDerivedTypes(TargetNamespace);
+            return types
+                .Select(t =>
+                {
+                    // フィールド名は {TypeName}Flg を期待
+                    var flagField = GetType()
+                        .GetField(
+                            t.Name + "Flg",
+                            BindingFlags.Instance
+                                | BindingFlags.Static
+                                | BindingFlags.Public
+                                | BindingFlags.NonPublic
+                        );
+
+                    bool condition() => GetBoolField(flagField);
+                    void processAction() => InvokeProcessParamByType(this, t, descriptor);
+
+                    return new ParamProcessConfig
+                    {
+                        condition = condition,
+                        processAction = processAction,
+                    };
+                })
+                .ToArray();
+        }
         protected abstract void Edit4Quest(
             VRCAvatarDescriptor descriptor,
             MizukiOptimizer optimizer
@@ -596,6 +690,120 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             {
                 // ignore invocation errors
             }
+        }
+
+        protected void SetNotSyncParameter(
+            VRCExpressionParameters Parameters,
+            List<string> NotSyncParameter
+        )
+        {
+            foreach (var parameter in Parameters.parameters)
+            {
+                if (NotSyncParameters.Contains(parameter.name))
+                {
+                    parameter.networkSynced = false;
+                }
+            }
+        }
+
+        protected void AddIfNotInParameters(
+            HashSet<string> paramList,
+            List<string> exeistParams,
+            string parameter,
+            bool isActive = true
+        )
+        {
+            if (isActive && !VRCParameters.Contains(parameter) && !exeistParams.Contains(parameter))
+            {
+                paramList.Add(parameter);
+            }
+        }
+
+        protected HashSet<string> EditFXParam(AnimatorController paryi_FX)
+        {
+            HashSet<string> used = GetUseParams(paryi_FX);
+            foreach (var p in paryi_FX.parameters.Where(p => !used.Contains(p.name)).ToArray())
+                paryi_FX.RemoveParameter(p);
+
+            return used;
+        }
+
+        protected static HashSet<string> GetUseParams(AnimatorController paryi_FX)
+        {
+            var used = new HashSet<string>();
+
+            void CollectBlendTreeParams(BlendTree bt)
+            {
+                if (bt == null)
+                    return;
+                if (!string.IsNullOrEmpty(bt.blendParameter))
+                    used.Add(bt.blendParameter);
+                if (!string.IsNullOrEmpty(bt.blendParameterY))
+                    used.Add(bt.blendParameterY);
+                var children = bt.children;
+                if (children == null)
+                    return;
+                foreach (var c in children)
+                {
+                    if (c.motion is BlendTree nested)
+                        CollectBlendTreeParams(nested);
+                }
+            }
+
+            foreach (var layer in paryi_FX.layers)
+            {
+                // states
+                foreach (var s in layer.stateMachine.states)
+                {
+                    var state = s.state;
+                    if (!string.IsNullOrEmpty(state.cycleOffsetParameter))
+                        used.Add(state.cycleOffsetParameter);
+                    if (!string.IsNullOrEmpty(state.timeParameter))
+                        used.Add(state.timeParameter);
+                    if (!string.IsNullOrEmpty(state.speedParameter))
+                        used.Add(state.speedParameter);
+                    if (!string.IsNullOrEmpty(state.mirrorParameter))
+                        used.Add(state.mirrorParameter);
+
+                    if (state.motion is BlendTree bt)
+                    {
+                        CollectBlendTreeParams(bt);
+                    }
+
+                    // transitions from this state
+                    foreach (var tr in state.transitions)
+                    {
+                        if (tr.conditions == null)
+                            continue;
+                        foreach (var c in tr.conditions)
+                        {
+                            if (!string.IsNullOrEmpty(c.parameter))
+                                used.Add(c.parameter);
+                        }
+                        // destination state's motion may also reference params
+                        var dst = tr.destinationState;
+                        if (dst != null && dst.motion is BlendTree dstBT)
+                            CollectBlendTreeParams(dstBT);
+                    }
+                }
+
+                // anyState transitions
+                foreach (var tr in layer.stateMachine.anyStateTransitions)
+                {
+                    if (tr.conditions == null)
+                        continue;
+                    foreach (var c in tr.conditions)
+                    {
+                        if (!string.IsNullOrEmpty(c.parameter))
+                            used.Add(c.parameter);
+                    }
+                    var dst = tr.destinationState;
+                    if (dst != null && dst.motion is BlendTree dstBT)
+                        CollectBlendTreeParams(dstBT);
+                }
+            }
+
+            return used;
         }
     }
 }

@@ -15,12 +15,12 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 
         public void Initialize(
             VRCAvatarDescriptor descriptor,
-            AnimatorController animator,
+            AnimatorController paryi_FX,
             MizukiOptimizer optimizer
         )
         {
             this.descriptor = descriptor;
-            this.animator = animator;
+            this.paryi_FX = paryi_FX;
             kamitukiFlg = optimizer.kamitukiFlg;
             nadeFlg = optimizer.nadeFlg;
         }
@@ -33,36 +33,33 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                 DeleteMenuButtonCtrl(new() { "Gimmick2_5" });
         }
 
-        public new void EditVRCExpressions(
-            VRCExpressionsMenu menu,
-            VRCExpressionParameters param,
-            List<string> Parameters,
-            List<string> menuPath
-        )
+        protected new void DeleteFxBT(List<string> Parameters)
         {
-            foreach (var parameter in param.parameters)
-            {
-                if (parameter.name is "NadeNade" && nadeFlg)
-                {
-                    parameter.defaultValue = 1;
-                    parameter.networkSynced = false;
-                    RemoveMenuItemRecursivelyInternal(
-                        menu,
-                        new() { "Gimmick2", "Gesture_change", "NadeNade" },
-                        0
-                    );
-                }
-                if (parameter.name is "Gimmick2_5" && kamitukiFlg)
-                {
-                    parameter.defaultValue = 1;
-                    parameter.networkSynced = false;
-                    RemoveMenuItemRecursivelyInternal(
-                        menu,
-                        new() { "Gimmick2", "噛みつき禁止" },
-                        0
-                    );
-                }
-            }
+            if (nadeFlg)
+                base.DeleteFxBT(new() { "NadeNade" });
+            if (kamitukiFlg)
+                base.DeleteFxBT(new() { "Gimmick2_5" });
+        }
+
+        public new void EditVRCExpressions(VRCExpressionsMenu menu, List<string> menuPath)
+        {
+            if (nadeFlg)
+                RemoveMenuItemRecursivelyInternal(
+                    menu,
+                    new() { "Gimmick2", "Gesture_change", "NadeNade" },
+                    0
+                );
+            if (kamitukiFlg)
+                RemoveMenuItemRecursivelyInternal(menu, new() { "Gimmick2", "噛みつき禁止" }, 0);
+        }
+
+        protected new void ChangeObj(List<string> delPath)
+        {
+            if (nadeFlg)
+                descriptor.transform.Find("Advanced/Gimmick2/Face2").gameObject.SetActive(true);
+
+            if (kamitukiFlg)
+                descriptor.transform.Find("Advanced/Gimmick2/3").gameObject.SetActive(true);
         }
     }
 }

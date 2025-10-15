@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 #if UNITY_EDITOR
-
+using UnityEditor.Animations;
 
 namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 {
@@ -14,12 +13,12 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 
         internal void Initialize(
             VRCAvatarDescriptor descriptor,
-            AnimatorController animator,
+            AnimatorController paryi_FX,
             MizukiOptimizer optimizer
         )
         {
             this.descriptor = descriptor;
-            this.animator = animator;
+            this.paryi_FX = paryi_FX;
             NailGaoFlg2 = optimizer.NailGaoFlg2;
         }
 

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 
@@ -13,56 +12,80 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
     {
         protected void DeleteBarCtrlHandHit(List<string> Parameters, params string[] stateNames)
         {
-            for (int i = 0; i < animator.layers.Length; i++)
+            for (int i = 0; i < paryi_FX.layers.Length; i++)
             {
-                var layer = animator.layers[i];
+                var layer = paryi_FX.layers[i];
                 if (layer.name is "BarCtrlHandHit")
                 {
-                    layer.stateMachine.states = layer
-                        .stateMachine.states.Where(s =>
-                        {
-                            if (stateNames.Contains(s.state.name))
-                                return false;
-                            foreach (var behaviour in s.state.behaviours)
-                                if (behaviour is VRCAvatarParameterDriver paramDriver)
-                                    foreach (var parameter in paramDriver.parameters)
-                                        return !Parameters.Contains(parameter.name);
+                    RemoveStatesAndTransitions(
+                        layer.stateMachine,
+                        layer
+                            .stateMachine.states.Where(s =>
+                            {
+                                if (stateNames.Contains(s.state.name))
+                                    return true;
+                                foreach (var behaviour in s.state.behaviours)
+                                    if (behaviour is VRCAvatarParameterDriver paramDriver)
+                                        foreach (var parameter in paramDriver.parameters)
+                                            return Parameters.Contains(parameter.name);
 
-                            return true;
-                        })
-                        .ToArray();
+                                return false;
+                            })
+                            .Select(s => s.state)
+                            .ToArray()
+                    );
                     if (layer.stateMachine.states.Length == 1)
-                        animator.RemoveLayer(i);
+                        paryi_FX.RemoveLayer(i);
+                }
+            }
+        }
+
+        protected void DeleteBarCtrl(params string[] stateNames)
+        {
+            for (int i = 0; i < paryi_FX.layers.Length; i++)
+            {
+                var layer = paryi_FX.layers[i];
+                if (layer.name is "BarCtrl")
+                {
+                    RemoveStatesAndTransitions(
+                        layer.stateMachine,
+                        layer
+                            .stateMachine.states.Where(s =>
+                            {
+                                if (stateNames.Contains(s.state.name))
+                                    return true;
+
+                                return false;
+                            })
+                            .Select(s => s.state)
+                            .ToArray()
+                    );
+                    if (layer.stateMachine.states.Length <= 2)
+                        paryi_FX.RemoveLayer(i);
                 }
             }
         }
 
         protected void DeleteMenuButtonCtrl(List<string> Parameters)
         {
-            animator
-                .layers.Where(layer => layer.name == "MenuButtonCtrl")
-                .ToList()
-                .ForEach(layer => ProcessMenuButtonCtrlLayer(layer, Parameters));
-        }
-
-        private void ProcessMenuButtonCtrlLayer(
-            AnimatorControllerLayer layer,
-            List<string> Parameters
-        )
-        {
-            var statesToRemove = layer
-                .stateMachine.states.Where(s => s.state.name == "off")
-                .SelectMany(s => s.state.transitions)
-                .Where(transition =>
-                    transition.conditions.Any(c => Parameters.Contains(c.parameter))
-                )
-                .Where(transition => transition.destinationState != null)
-                .Select(transition => transition.destinationState.name)
-                .ToHashSet();
-
-            layer.stateMachine.states = layer
-                .stateMachine.states.Where(s => !statesToRemove.Contains(s.state.name))
-                .ToArray();
+            var layer = paryi_FX.layers.FirstOrDefault(l => l.name == "MenuButtonCtrl");
+            if (layer != null)
+            {
+                var offState = layer.stateMachine.states.FirstOrDefault(s => s.state.name == "off");
+                if (offState.state != null)
+                {
+                    RemoveStatesAndTransitions(
+                        layer.stateMachine,
+                        offState
+                            .state.transitions.Where(t =>
+                                t.destinationState != null
+                                && t.conditions.Any(c => Parameters.Contains(c.parameter))
+                            )
+                            .Select(t => t.destinationState)
+                            .ToArray()
+                    );
+                }
+            }
         }
     }
 }

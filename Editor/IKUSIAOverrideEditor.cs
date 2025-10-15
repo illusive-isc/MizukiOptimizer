@@ -11,13 +11,21 @@ namespace jp.illusive_isc.IKUSIAOverride
 {
     public class IKUSIAOverrideEditor : Editor
     {
+        static System.Collections.Generic.Dictionary<Type, FieldInfo[]> _propertyFieldCache = new();
         protected void AutoInitializeSerializedProperties(IKUSIAOverrideEditor editorInstance)
         {
+            // キャッシュ用の Dictionary を static フィールドとして保持
+
             var editorType = editorInstance.GetType();
-            var serializedPropertyFields = editorType
-                .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(f => f.FieldType == typeof(SerializedProperty))
-                .ToArray();
+            if (!_propertyFieldCache.TryGetValue(editorType, out var serializedPropertyFields))
+            {
+                serializedPropertyFields = editorType
+                    .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Where(f => f.FieldType == typeof(SerializedProperty))
+                    .ToArray();
+                _propertyFieldCache[editorType] = serializedPropertyFields;
+            }
+
             foreach (var field in serializedPropertyFields)
             {
                 try

@@ -18,12 +18,12 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 
         internal void Initialize(
             VRCAvatarDescriptor descriptor,
-            AnimatorController animator,
+            AnimatorController paryi_FX,
             MizukiOptimizer optimizer
         )
         {
             this.descriptor = descriptor;
-            this.animator = animator;
+            this.paryi_FX = paryi_FX;
             breastSizeFlg1 = optimizer.BreastSizeFlg1;
             breastSizeFlg2 = optimizer.BreastSizeFlg2;
             breastSizeFlg3 = optimizer.BreastSizeFlg3;
@@ -32,6 +32,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         protected new void DeleteFx(List<string> Layers)
         {
             DeleteBarCtrlHandHit(Parameters, "BreastSize");
+            DeleteBarCtrl("BarOff", "BarOpen", "BreastSize");
         }
 
         internal new void ChangeObj(List<string> delPath)

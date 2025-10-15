@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+using System.Diagnostics;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
+using Debug = UnityEngine.Debug;
 #if AVATAR_OPTIMIZER_FOUND
 using Anatawa12.AvatarOptimizer;
 #endif
@@ -14,6 +14,8 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
     [AddComponentMenu("")]
     internal class MizukiOptimizerEditor : IKUSIAOverrideEditor
     {
+        // 多重実行防止用フラグ
+        static bool isExecuting = false;
         SerializedProperty StatusFlg;
         SerializedProperty NailGaoFlg;
         SerializedProperty NailGaoFlg2;
@@ -34,6 +36,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         SerializedProperty AvatarLightFlg;
         SerializedProperty ColliderFlg;
         SerializedProperty PictureFlg;
+        SerializedProperty CameraPictureFlg;
         SerializedProperty BreastSizeFlg;
         SerializedProperty LightGunFlg;
         SerializedProperty WhiteBreathFlg;
@@ -55,10 +58,10 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         SerializedProperty FaceValFlg;
         SerializedProperty kamitukiFlg;
         SerializedProperty nadeFlg;
-        SerializedProperty controller;
+        SerializedProperty paryi_FX;
         SerializedProperty menu;
         SerializedProperty param;
-        SerializedProperty controllerDef;
+        SerializedProperty paryi_FXDef;
         SerializedProperty menuDef;
         SerializedProperty paramDef;
         SerializedProperty IKUSIA_emote;
@@ -282,7 +285,8 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             EditorGUILayout.PropertyField(HelpFlg, new GUIContent("Help削除"));
             EditorGUILayout.PropertyField(FaceEffectFlg, new GUIContent("FaceEffect削除"));
 
-            EditorGUILayout.PropertyField(PictureFlg, new GUIContent("撮影ギミック削除"));
+            EditorGUILayout.PropertyField(CameraPictureFlg, new GUIContent("撮影ギミック削除"));
+            EditorGUILayout.PropertyField(PictureFlg, new GUIContent("撮影補助削除"));
             EditorGUILayout.PropertyField(MenuFlg, new GUIContent("メニュー削除"));
 
             EditorGUILayout.PropertyField(
@@ -292,8 +296,11 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             EditorGUILayout.PropertyField(FaceLockFlg, new GUIContent("表情固定機能削除"));
             EditorGUILayout.PropertyField(FaceValFlg, new GUIContent("顔差分変更機能削除"));
 
-            FaceGestureFlg.boolValue =
+            bool prevFaceGestureFlg =
                 FaceLockFlg.boolValue || FaceValFlg.boolValue || FaceGestureFlg2.boolValue;
+            if (FaceGestureFlg.boolValue != prevFaceGestureFlg)
+                FaceGestureFlg.boolValue = prevFaceGestureFlg;
+
             EditorGUILayout.PropertyField(
                 nadeFlg,
                 new GUIContent("なでギミックをメニューから削除して常にON")
@@ -306,11 +313,13 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                 IKUSIA_emote,
                 new GUIContent("IKUSIA_emoteをメニューのみ削除")
             );
-            FaceContactFlg.boolValue = kamitukiFlg.boolValue || nadeFlg.boolValue;
-
+            bool prevFaceContactFlg = kamitukiFlg.boolValue || nadeFlg.boolValue;
+            if (FaceContactFlg.boolValue != prevFaceContactFlg)
+                FaceContactFlg.boolValue = prevFaceContactFlg;
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
-            questArea = EditorGUILayout.Foldout(questArea, "Quest用調整項目(素体のみ)", true);
+            // questArea = EditorGUILayout.Foldout(questArea, "Quest用調整項目(素体のみ)", true);
+            questArea = false;
             if (questArea)
             {
                 var Mizuki = (MizukiOptimizer)target;
@@ -632,8 +641,17 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             }
 
             // Execute ボタンの追加
+            serializedObject.ApplyModifiedProperties();
+
             if (GUILayout.Button("Execute"))
             {
+                if (isExecuting)
+                {
+                    Debug.LogWarning("現在実行中です。しばらくお待ちください。");
+                    return;
+                }
+                isExecuting = true;
+                var step1 = Stopwatch.StartNew();
                 IKUSIAOverrideAbstract script = (IKUSIAOverrideAbstract)target;
                 VRCAvatarDescriptor descriptor =
                     script.transform.root.GetComponent<VRCAvatarDescriptor>();
@@ -653,6 +671,9 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                 {
                     Debug.LogWarning("VRCAvatarDescriptor が見つかりません。");
                 }
+                step1.Stop();
+                Debug.Log("MizukiOptimizer: " + step1.ElapsedMilliseconds + "ms");
+                isExecuting = false;
             }
             EditorGUILayout.Space();
             GUILayout.TextField(
@@ -666,7 +687,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             );
             GUI.enabled = false;
             EditorGUILayout.Space();
-            EditorGUILayout.PropertyField(controllerDef, new GUIContent("Animator Controller"));
+            EditorGUILayout.PropertyField(paryi_FXDef, new GUIContent("Animator Controller"));
             EditorGUILayout.PropertyField(menuDef, new GUIContent("Expressions Menu"));
             EditorGUILayout.PropertyField(paramDef, new GUIContent("Expression Parameters"));
             GUI.enabled = true;
@@ -681,12 +702,9 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                 }
             );
             EditorGUILayout.Space();
-            EditorGUILayout.PropertyField(controller, new GUIContent("Animator Controller"));
+            EditorGUILayout.PropertyField(paryi_FX, new GUIContent("Animator Controller"));
             EditorGUILayout.PropertyField(menu, new GUIContent("Expressions Menu"));
             EditorGUILayout.PropertyField(param, new GUIContent("Expression Parameters"));
-
-            // 変更内容の適用
-            serializedObject.ApplyModifiedProperties();
         }
 
         [MenuItem("GameObject/illusive_tools/Create MizukiOptimizer Object", true)]

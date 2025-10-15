@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
@@ -29,19 +32,19 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                 Directory.CreateDirectory(pathDir);
             }
 
-            if (!controllerDef)
+            if (!paryi_FXDef)
             {
                 if (!descriptor.baseAnimationLayers[4].animatorController)
                     descriptor.baseAnimationLayers[4].animatorController =
                         AssetDatabase.LoadAssetAtPath<AnimatorController>(
                             AssetDatabase.GUIDToAssetPath("eabec4db12bc4574c996310914852639")
                         );
-                controllerDef =
+                paryi_FXDef =
                     descriptor.baseAnimationLayers[4].animatorController as AnimatorController;
             }
-            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(controllerDef), pathDir + pathName);
+            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(paryi_FXDef), pathDir + pathName);
 
-            controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(pathDir + pathName);
+            paryi_FX = AssetDatabase.LoadAssetAtPath<AnimatorController>(pathDir + pathName);
 
             if (!menuDef)
             {
@@ -72,6 +75,13 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             param = ScriptableObject.CreateInstance<VRCExpressionParameters>();
             EditorUtility.CopySerialized(paramDef, param);
             param.name = paramDef.name;
+            var NotSyncParameterExtend = new List<string>();
+            if (nadeFlg)
+                NotSyncParameterExtend.Add("NadeNade");
+            if (kamitukiFlg)
+                NotSyncParameterExtend.Add("Gimmick2_5");
+
+            SetNotSyncParameter(param, NotSyncParameters.Concat(NotSyncParameterExtend).ToList());
             EditorUtility.SetDirty(param);
             AssetDatabase.CreateAsset(param, pathDir + param.name + ".asset");
             step1.Stop();
@@ -102,7 +112,27 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                 if (config.condition())
                     config.processAction();
             }
+            var baseLayers = descriptor.baseAnimationLayers;
+            var paryi_LocoParam = GetUseParams(
+                baseLayers[0].animatorController as AnimatorController
+            );
 
+            var paryi_GestureParam = GetUseParams(
+                baseLayers[2].animatorController as AnimatorController
+            );
+            var paryi_ActionParam = GetUseParams(
+                baseLayers[3].animatorController as AnimatorController
+            );
+            var paryi_FXParam = EditFXParam(paryi_FX);
+
+            HashSet<string> allParams = new HashSet<string>();
+            allParams.UnionWith(paryi_LocoParam);
+            allParams.UnionWith(paryi_GestureParam);
+            allParams.UnionWith(paryi_ActionParam);
+            allParams.UnionWith(paryi_FXParam);
+            param.parameters = param
+                .parameters.Where(param => allParams.Contains(param.name))
+                .ToArray();
             if (IKUSIA_emote)
                 foreach (var control in menu.controls)
                     if (control.name == "IKUSIA_emote")
@@ -110,7 +140,6 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                         menu.controls.Remove(control);
                         break;
                     }
-
             Edit4Quest(descriptor, this);
 
             step2.Stop();

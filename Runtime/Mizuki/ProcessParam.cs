@@ -1,8 +1,4 @@
 #if UNITY_EDITOR
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 
@@ -64,11 +60,9 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         [SerializeField]
         private bool TailFlg1 = false;
 
-        [SerializeField]
-        private bool TPSFlg = false;
+        public bool TPSFlg = false;
 
-        [SerializeField]
-        private bool ClairvoyanceFlg = false;
+        public bool ClairvoyanceFlg = false;
 
         [SerializeField]
         private bool JointBallFlg = false;
@@ -110,6 +104,9 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 
         [SerializeField]
         private bool PictureFlg = false;
+
+        [SerializeField]
+        private bool CameraPictureFlg = false;
 
         [SerializeField]
         private bool BreastSizeFlg = false;
@@ -183,49 +180,9 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         private bool IKUSIA_emote = false;
         private readonly bool CoreFlg = true;
 
-        // フィールドがstaticかinstanceかを判定してアクセスするヘルパーメソッド
-        private static TFieldType GetFieldValue<TFieldType>(FieldInfo field, object instance)
-            where TFieldType : class
+        protected ParamProcessConfig[] GetParamConfigs(VRCAvatarDescriptor descriptor)
         {
-            if (field == null)
-                return null;
-
-            if (field.IsStatic)
-            {
-                return field.GetValue(null) as TFieldType;
-            }
-            else
-            {
-                return field.GetValue(instance) as TFieldType;
-            }
-        }
-
-        protected override ParamProcessConfig[] GetParamConfigs(VRCAvatarDescriptor descriptor)
-        {
-            var types = GetMizukiBaseDerivedTypes("jp.illusive_isc.IKUSIAOverride.Mizuki");
-            var myType = GetType();
-            return types
-                .Select(t =>
-                {
-                    // フィールド名は {TypeName}Flg を期待
-                    var flagField = myType.GetField(
-                        t.Name + "Flg",
-                        BindingFlags.Instance
-                            | BindingFlags.Static
-                            | BindingFlags.Public
-                            | BindingFlags.NonPublic
-                    );
-
-                    bool condition() => GetBoolField(flagField);
-                    void processAction() => InvokeProcessParamByType(this, t, descriptor);
-
-                    return new ParamProcessConfig
-                    {
-                        condition = condition,
-                        processAction = processAction,
-                    };
-                })
-                .ToArray();
+            return GetParamConfigs(descriptor, "jp.illusive_isc.IKUSIAOverride.Mizuki");
         }
     }
 }
