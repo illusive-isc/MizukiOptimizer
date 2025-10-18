@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 using VRC.SDK3.Avatars.Components;
-using VRC.Dynamics;
 #if AVATAR_OPTIMIZER_FOUND
 using Anatawa12.AvatarOptimizer;
 #endif
@@ -10,338 +9,261 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
     {
         public bool questFlg1 = false;
 
+        public bool Butt;
         public bool Skirt_Root;
-
         public bool Breast;
+        public bool Cheek;
+        public bool ahoge;
+        public bool Backhair;
+        public bool Front;
+        public bool Frontside;
+        public bool side;
+        public bool headband_Root;
+        public bool tang;
+        public bool TigerEar;
+        public bool Shoulder_Ribbon;
+        public bool coat_hand;
+        public bool Hand_frills;
+        public bool tail;
+        public bool Leg_frills;
 
-        public bool backhair;
-
-        public bool back_side_root;
-
-        public bool Head_002;
-
-        public bool Front_hair2_root;
-
-        public bool side_1_root;
-
-        public bool hair_2;
-
-        public bool sidehair;
-
-        public bool side_3_root;
-
-        public bool Side_root;
-
-        public bool tail_044;
-
-        public bool tail_022;
-
-        public bool tail_024;
-
-        public bool chest_collider1;
-        public bool chest_collider2;
-
-        public bool upperleg_collider1;
-        public bool upperleg_collider2;
-        public bool upperleg_collider3;
-
-        public bool upperArm_collider;
-
-        public bool head_collider1;
-        public bool head_collider2;
-
-        public bool Breast_collider;
-
-        public bool plane_collider;
+        public bool Upperleg_collider1;
+        public bool Upperleg_collider2;
+        public bool Chest_collider;
+        public bool Butt_collider;
+        public bool UpperArm_collider1;
+        public bool UpperArm_collider2;
+        public bool Shoulder_collider;
         public bool AAORemoveFlg;
 
-        public bool plane_tail_collider;
-        protected override void Edit4Quest(
-            VRCAvatarDescriptor descriptor,
-            MizukiOptimizer optimizer
-        )
+        protected override void Edit4Quest(VRCAvatarDescriptor descriptor)
         {
-            if (optimizer.questFlg1)
+            if (questFlg1)
             {
-                var AFK_World = descriptor.transform.Find("Advanced/AFK_World/position");
+                if (Butt)
+                    DelPBByPathArray(descriptor, "Armature/Hips/Butt_L", "Armature/Hips/Butt_R");
 
-                IKUSIAOverrideCore.DestroyObj(AFK_World.Find("water2"));
-                IKUSIAOverrideCore.DestroyObj(AFK_World.Find("water3"));
-                IKUSIAOverrideCore.DestroyObj(AFK_World.Find("AFKIN Particle"));
-                IKUSIAOverrideCore.DestroyObj(AFK_World.Find("swim"));
-                IKUSIAOverrideCore.DestroyObj(AFK_World.Find("IdolParticle"));
-
-                if (optimizer.Skirt_Root)
+                if (Skirt_Root)
                     DelPBByPathArray(
                         descriptor,
+                        "Armature/Hips/Skirt_Root/Skirt_L.038",
                         "Armature/Hips/Skirt_Root/Skirt_Root_L",
                         "Armature/Hips/Skirt_Root/Skirt_Root_R"
                     );
+                if (Upperleg_collider1)
+                {
+                    DelColliderSettingByPathArray(
+                        descriptor,
+                        new string[] { "Upperleg_L", "Upperleg_R" },
+                        "Armature/Hips/Skirt_Root/Skirt_L.038",
+                        "Armature/Hips/Skirt_Root/Skirt_Root_L",
+                        "Armature/Hips/Skirt_Root/Skirt_Root_R"
+                    );
+                }
+                if (Breast)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Breast_L",
+                        "Armature/Hips/Spine/Chest/Breast_R"
+                    );
+                if (Shoulder_collider)
+                {
+                    DelColliderSettingByPathArray(
+                        descriptor,
+                        new string[] { "Shoulder_L", "Shoulder_R" },
+                        "Armature/Hips/Spine/Chest/Breast_L",
+                        "Armature/Hips/Spine/Chest/Breast_R"
+                    );
+                }
+                if (UpperArm_collider1)
+                {
+                    DelColliderSettingByPathArray(
+                        descriptor,
+                        new string[] { "Upperarm_L", "Upperarm_R" },
+                        "Armature/Hips/Spine/Chest/Breast_L",
+                        "Armature/Hips/Spine/Chest/Breast_R"
+                    );
+                }
+                if (Cheek)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Neck/Head/Cheek_L/Cheek_L.001",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Cheek_R/Cheek_R.001"
+                    );
+                if (ahoge)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/ahoge"
+                    );
+                if (Backhair)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair2_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair2_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair3_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair3_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair4_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair4_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair5",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/backhair7_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/backhair7_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair_L"
+                    );
+                if (Chest_collider)
+                {
+                    DelColliderSettingByPathArray(
+                        descriptor,
+                        new string[] { "Chest" },
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair2_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair2_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair3_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair3_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair4_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair4_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair5",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/backhair7_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/backhair7_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair_L"
+                    );
+                }
+                if (Butt_collider)
+                {
+                    DelColliderSettingByPathArray(
+                        descriptor,
+                        new string[] { "Hips" },
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair2_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair2_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair3_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair3_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair4_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair4_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair5",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/backhair7_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/backhair7_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Backhair_L"
+                    );
+                }
+                if (Front)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Front",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Front1",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Front2",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Front_2"
+                    );
+                if (Frontside)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Frontside1_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Frontside1_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Frontside2_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Frontside2_R"
+                    );
+                if (side)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side3_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side3_L.001",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side3_L.002",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side3_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side3_R.001",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side3_R.002",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side5_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side5_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side6_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side6_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side_Root_L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side_Root_R"
+                    );
+                if (headband_Root)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Neck/Head/headband_Root"
+                    );
+                if (tang)
+                    DelPBByPathArray(descriptor, "Armature/Hips/Spine/Chest/Neck/Head/tang");
+                if (TigerEar)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Neck/Head/TigerEar/L/ear.L",
+                        "Armature/Hips/Spine/Chest/Neck/Head/TigerEar/R/ear.R"
+                    );
+                if (Shoulder_Ribbon)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Shoulder_L/Shoulder_Ribbon_FrontRoot_L",
+                        "Armature/Hips/Spine/Chest/Shoulder_R/Shoulder_Ribbon_FrontRoot_R",
+                        "Armature/Hips/Spine/Chest/Shoulder_Ribbon_BackRoot_L",
+                        "Armature/Hips/Spine/Chest/Shoulder_Ribbon_BackRoot_R"
+                    );
+                if (UpperArm_collider2)
+                {
+                    DelColliderSettingByPathArray(
+                        descriptor,
+                        new string[] { "Upperarm_L", "Upperarm_R" },
+                        "Armature/Hips/Spine/Chest/Shoulder_L/Shoulder_Ribbon_FrontRoot_L",
+                        "Armature/Hips/Spine/Chest/Shoulder_R/Shoulder_Ribbon_FrontRoot_R",
+                        "Armature/Hips/Spine/Chest/Shoulder_Ribbon_BackRoot_L",
+                        "Armature/Hips/Spine/Chest/Shoulder_Ribbon_BackRoot_R"
+                    );
+                }
+                if (coat_hand)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Shoulder_R/Upperarm_R/Lowerarm_R/Right Hand/coat_hand_root_R",
+                        "Armature/Hips/Spine/Chest/Shoulder_L/Upperarm_L/Lowerarm_L/Left Hand/coat_hand_root_L"
+                    );
+                if (Hand_frills)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Spine/Chest/Shoulder_R/Upperarm_R/Lowerarm_R/Right Hand/Hand_frills_R",
+                        "Armature/Hips/Spine/Chest/Shoulder_L/Upperarm_L/Lowerarm_L/Left Hand/Hand_frills_L"
+                    );
+                if (tail)
+                    DelPBByPathArray(descriptor, "Armature/Hips/tail/tail.001");
+                if (Upperleg_collider2)
+                {
+                    DelColliderSettingByPathArray(
+                        descriptor,
+                        new string[] { "Upperleg_L", "Upperleg_R" },
+                        "Armature/Hips/tail/tail.001"
+                    );
+                }
+                if (Leg_frills)
+                    DelPBByPathArray(
+                        descriptor,
+                        "Armature/Hips/Upperleg_L/Lowerleg_L/Foot_L/Leg_frills_Root_L"
+                    );
 
-                if (optimizer.Breast)
-                {
-                    DelPBByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Breast_L",
-                            "Armature/Hips/Spine/Chest/Breast_R",
-                        }
-                    );
-                }
-                if (optimizer.backhair)
-                {
-                    DelPBByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_hair_root/back_hair_root_L/backhair_L",
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_hair_root/back_hair_root_R/backhair_R",
-                        }
-                    );
-                }
-                if (optimizer.back_side_root)
-                {
-                    DelPBByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_side_root",
-                        }
-                    );
-                }
-                if (optimizer.Head_002)
-                {
-                    DelPBByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Front_hair1_root/Head.002",
-                        }
-                    );
-                }
-                if (optimizer.Front_hair2_root)
-                {
-                    DelPBByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Front_hair2_root",
-                        }
-                    );
-                }
-                if (optimizer.side_1_root)
-                {
-                    DelPBByPathArray(
-                        descriptor,
-                        new string[] { "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side_1_root" }
-                    );
-                }
-                if (optimizer.sidehair)
-                {
-                    DelPBByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side_2_root/side_ani_L/sidehair_L.003",
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side_2_root/side_ani_R/sidehair_R.003",
-                        }
-                    );
-                }
-                if (optimizer.sidehair)
-                {
-                    DelPBByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side_2_root/sidehair_L",
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side_2_root/sidehair_R",
-                        }
-                    );
-                }
-                if (optimizer.side_3_root)
-                {
-                    DelPBByPathArray(
-                        descriptor,
-                        new string[] { "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/side_3_root" }
-                    );
-                }
-                if (optimizer.Side_root)
-                {
-                    DelPBByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/Side_root",
-                            "Armature/Hips/Spine/Chest/Breast_L",
-                            "Armature/Hips/Spine/Chest/Breast_R",
-                        }
-                    );
-                }
-                if (optimizer.tail_044)
-                {
-                    DelPBByPathArray(descriptor, new string[] { "Armature/Hips/tail/tail.044" });
-                }
-                if (optimizer.tail_022)
-                {
-                    DelPBByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/tail/tail.044/tail.001/tail.002/tail.003/tail.004/tail.005/tail.006/tail.007/tail.008/tail.009/tail.010/tail.011/tail.012/tail.013/tail.014/tail.018/tail.021/tail.022",
-                            "Armature/Hips/tail/tail.044/tail.001/tail.002/tail.003/tail.004/tail.005/tail.006/tail.007/tail.008/tail.009/tail.010/tail.011/tail.012/tail.013/tail.014/tail.018/tail.021/tail.024",
-                        }
-                    );
-                }
-                if (optimizer.chest_collider1)
+                if (Upperleg_collider2)
                 {
                     DelColliderSettingByPathArray(
                         descriptor,
                         new string[] { "chest_collider" },
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_hair_root/back_hair_root_R/backhair_R",
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_hair_root/back_hair_root_L/backhair_L",
-                        }
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_hair_root/back_hair_root_R/backhair_R",
+                        "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_hair_root/back_hair_root_L/backhair_L"
                     );
                 }
-                if (optimizer.chest_collider2)
+                if (AAORemoveFlg)
                 {
-                    DelColliderSettingByPathArray(
-                        descriptor,
-                        new string[] { "chest_collider" },
-                        new string[] { "Armature/Hips/tail/tail.044" }
-                    );
-                }
-
-                if (optimizer.chest_collider1 && optimizer.chest_collider2)
-                    IKUSIAOverrideCore.DestroyComponent<VRCPhysBoneColliderBase>(
-                        descriptor.transform.Find("Armature/Hips/Spine/Chest/chest_collider")
-                    );
-                if (optimizer.upperleg_collider1)
-                {
-                    DelColliderSettingByPathArray(
-                        descriptor,
-                        new string[] { "upperleg_L_collider", "upperleg_R_collider" },
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_hair_root/back_hair_root_R/backhair_R",
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_hair_root/back_hair_root_L/backhair_L",
-                        }
-                    );
-                }
-                if (optimizer.upperleg_collider2)
-                {
-                    DelColliderSettingByPathArray(
-                        descriptor,
-                        new string[] { "upperleg_L_collider", "upperleg_R_collider" },
-                        new string[]
-                        {
-                            "Armature/Hips/Skirt_Root/Skirt_Root_R",
-                            "Armature/Hips/Skirt_Root/Skirt_Root_L",
-                        }
-                    );
-                }
-                if (optimizer.upperleg_collider3)
-                {
-                    DelColliderSettingByPathArray(
-                        descriptor,
-                        new string[] { "upperleg_L_collider", "upperleg_R_collider" },
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_hair_root/back_hair_root_R/backhair_R",
-                        }
-                    );
-                }
-                if (
-                    optimizer.upperleg_collider1
-                    && optimizer.upperleg_collider2
-                    && optimizer.upperleg_collider3
-                )
-                {
-                    DelPBColliderByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/Upperleg_L/upperleg_L_collider",
-                            "Armature/Hips/Upperleg_R/upperleg_R_collider",
-                        }
-                    );
-                }
-                if (optimizer.upperArm_collider)
-                {
-                    DelPBColliderByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Shoulder_L/Upperarm_L/upperArm_L_collider",
-                            "Armature/Hips/Spine/Chest/Shoulder_R/Upperarm_R/upperArm_R_collider",
-                        }
-                    );
-                }
-                if (optimizer.plane_collider)
-                    IKUSIAOverrideCore.DestroyComponent<VRCPhysBoneColliderBase>(
-                        descriptor.transform.Find("Armature/plane_collider")
-                    );
-                if (optimizer.head_collider1)
-                {
-                    DelColliderSettingByPathArray(
-                        descriptor,
-                        new string[] { "head_collider" },
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_hair_root/back_hair_root_L/backhair_L",
-                            "Armature/Hips/Spine/Chest/Neck/Head/Hair_root/back_hair_root/back_hair_root_R/backhair_R",
-                        }
-                    );
-                }
-                if (optimizer.head_collider2)
-                {
-                    DelColliderSettingByPathArray(
-                        descriptor,
-                        new string[] { "head_collider" },
-                        new string[] { "Armature/Hips/tail/tail.044" }
-                    );
-                }
-                if (optimizer.head_collider1 && optimizer.head_collider2)
-                    IKUSIAOverrideCore.DestroyComponent<VRCPhysBoneColliderBase>(
-                        descriptor.transform.Find(
-                            "Armature/Hips/Spine/Chest/Neck/Head/head_collider"
-                        )
-                    );
-                if (optimizer.Breast_collider)
-                {
-                    DelPBColliderByPathArray(
-                        descriptor,
-                        new string[]
-                        {
-                            "Armature/Hips/Spine/Chest/Breast_R",
-                            "Armature/Hips/Spine/Chest/Breast_L",
-                        }
-                    );
-                }
-                if (optimizer.plane_tail_collider)
-                    IKUSIAOverrideCore.DestroyComponent<VRCPhysBoneColliderBase>(
-                        descriptor.transform.Find("Armature/plane_tail_collider")
-                    );
-            }
-
-            if (optimizer.AAORemoveFlg)
-            {
 #if AVATAR_OPTIMIZER_FOUND
-                if (
-                    !descriptor
-                        .transform.Find("Body")
-                        .TryGetComponent<RemoveMeshByBlendShape>(out var removeMesh)
-                )
-                {
-                    removeMesh = descriptor
-                        .transform.Find("Body")
-                        .gameObject.AddComponent<RemoveMeshByBlendShape>();
-                    removeMesh.Initialize(1);
-                }
-                removeMesh.ShapeKeys.Add("照れ");
+                    if (
+                        !descriptor
+                            .transform.Find("Body")
+                            .TryGetComponent<RemoveMeshByBlendShape>(out var removeMesh)
+                    )
+                    {
+                        removeMesh = descriptor
+                            .transform.Find("Body")
+                            .gameObject.AddComponent<RemoveMeshByBlendShape>();
+                        removeMesh.Initialize(1);
+                    }
+                    removeMesh.ShapeKeys.Add("照れ");
 #endif
+                }
             }
         }
     }

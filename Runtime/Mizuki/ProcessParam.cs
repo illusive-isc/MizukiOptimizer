@@ -7,6 +7,15 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
     public partial class MizukiOptimizer : IKUSIAOverrideAbstract
     {
         [SerializeField]
+        private bool ClothFlg = false;
+
+        [SerializeField]
+        private bool ClothDelFlg = false;
+        public bool ClothDelFlg2 = false;
+
+        public bool ArmAcceFlg2 = false;
+
+        [SerializeField]
         private bool StatusFlg = false;
 
         public bool heelFlg1 = true;
@@ -15,50 +24,6 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 
         [SerializeField]
         private bool FreeClothFlg = false;
-
-        [SerializeField]
-        private bool ClothFlg = false;
-
-        public bool ClothFlg1 = false;
-
-        public bool ClothFlg2 = true;
-
-        public bool ClothFlg3 = false;
-
-        public bool ClothFlg4 = false;
-
-        public bool ClothFlg5 = false;
-
-        public bool ClothFlg6 = false;
-
-        public bool ClothFlg7 = false;
-
-        public bool ClothFlg8 = false;
-
-        public bool HairFlg1 = false;
-
-        public bool HairFlg11 = false;
-
-        public bool HairFlg12 = false;
-
-        public bool HairFlg2 = false;
-
-        public bool HairFlg22 = false;
-
-        public bool HairFlg3 = false;
-
-        public bool HairFlg4 = false;
-
-        public bool HairFlg5 = false;
-
-        public bool HairFlg51 = false;
-
-        public bool HairFlg6 = false;
-
-        public bool TailFlg = false;
-
-        [SerializeField]
-        private bool TailFlg1 = false;
 
         public bool TPSFlg = false;
 
@@ -86,6 +51,10 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 
         [SerializeField]
         private bool BeltFlg = false;
+        public bool BeltFlg2 = false;
+        public bool LegBeltFlg2 = false;
+        public bool OuterFlg2 = false;
+        public bool ShoesFlg2 = false;
 
         [SerializeField]
         private bool LegBeltFlg = false;
@@ -104,6 +73,9 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 
         [SerializeField]
         private bool PictureFlg = false;
+
+        [SerializeField]
+        private bool HairFlg = false;
 
         [SerializeField]
         private bool CameraPictureFlg = false;
@@ -160,21 +132,27 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         public bool blinkFlg = false;
 
         public bool AccesaryFlg = false;
+        public bool AccesaryFlg2 = false;
 
         public bool EarAngryFlg = false;
 
         public bool EarTailFlg = false;
+        public bool EarTailFlg2 = false;
 
         public bool ElfEarFlg = false;
+        public bool ElfEarFlg2 = false;
 
         public bool EyemaskFlg = false;
+        public bool EyemaskFlg2 = false;
 
         public bool FronthairLeftFlg = false;
 
         public bool FronthairRightFlg = false;
 
         public bool HeadDressFlg = false;
+        public bool HeadDressFlg2 = false;
         public bool MenuFlg = false;
+        public bool FreeMenuFlg = false;
 
         [SerializeField]
         private bool IKUSIA_emote = false;

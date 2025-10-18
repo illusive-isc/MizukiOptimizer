@@ -477,10 +477,8 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                 })
                 .ToArray();
         }
-        protected abstract void Edit4Quest(
-            VRCAvatarDescriptor descriptor,
-            MizukiOptimizer optimizer
-        );
+
+        protected abstract void Edit4Quest(VRCAvatarDescriptor descriptor);
 
         protected static void DelPBByPathArray(
             VRCAvatarDescriptor descriptor,
@@ -511,7 +509,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         protected static void DelColliderSettingByPathArray(
             VRCAvatarDescriptor descriptor,
             string[] colliderNames,
-            string[] pbPaths
+            params string[] pbPaths
         )
         {
             foreach (var pbPath in pbPaths)

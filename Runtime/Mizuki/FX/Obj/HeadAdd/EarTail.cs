@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
+using VRC.SDK3.Avatars.Components;
 #if UNITY_EDITOR
+
 
 namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 {
@@ -16,19 +19,31 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             "ear tail",
         };
 
-        // internal new void ChangeObj(List<string> delPath)
-        // {
-        //     var body_b = descriptor.transform.Find("Body_b");
-        //     if (body_b)
-        //         if (body_b.TryGetComponent<SkinnedMeshRenderer>(out var body_bSMR))
-        //         {
-        //             SetWeight(
-        //                 body_bSMR,
-        //                 "Foot_heel_OFF_____足_ヒールオフ",
-        //                 heelFlg1 || heelFlg2 ? 0 : 100
-        //             );
-        //         }
-        // }
+        bool EarTailFlg2;
+
+        internal void Initialize(
+            VRCAvatarDescriptor descriptor,
+            AnimatorController paryi_FX,
+            MizukiOptimizer optimizer
+        )
+        {
+            this.descriptor = descriptor;
+            this.paryi_FX = paryi_FX;
+            EarTailFlg2 = optimizer.EarTailFlg2;
+        }
+
+        internal new readonly List<string> delPath = new()
+        {
+            "Armature/Hips/tail",
+            "Armature/Hips/Spine/Chest/Neck/Head/TigerEar",
+        };
+
+        internal new void ChangeObj(List<string> delPath)
+        {
+            base.ChangeObj(delPath);
+            if (EarTailFlg2)
+                DestroyObj(descriptor.transform.Find("eartail"));
+        }
     }
 }
 #endif

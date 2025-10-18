@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -140,7 +139,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                         menu.controls.Remove(control);
                         break;
                     }
-            Edit4Quest(descriptor, this);
+            Edit4Quest(descriptor);
 
             step2.Stop();
             return step2.ElapsedMilliseconds;
