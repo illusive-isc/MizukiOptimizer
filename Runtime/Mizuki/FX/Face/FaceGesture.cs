@@ -173,6 +173,19 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
                         }
                         layer.stateMachine.states = states;
                     }
+                    if (layer.name is "Left Right Hand")
+                    {
+                        var anyStateTransitions = layer.stateMachine.anyStateTransitions;
+
+                        foreach (var transition in anyStateTransitions)
+                        {
+                            transition.conditions = transition
+                                .conditions.Where(c => !FaceVariation.Contains(c.parameter))
+                                .ToArray();
+                        }
+                        layer.stateMachine.anyStateTransitions = anyStateTransitions;
+                    }
+
                     paryi_FX.layers = paryi_FX
                         .layers.Where(layer => !("FaceCtrl" == layer.name))
                         .ToArray();
