@@ -37,6 +37,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             "Armature/Hips/Upperleg_L/Lowerleg_L/Leg_frills_Loot_L",
             "Armature/Hips/Spine/Chest/Shoulder_R/Upperarm_R/Lowerarm_R/Right Hand/Hand_frills_R",
             "Armature/Hips/Spine/Chest/Shoulder_L/Upperarm_L/Lowerarm_L/Left Hand/Hand_frills_L",
+            "Armature/Hips/Upperleg_L/Lowerleg_L/Foot_L/Leg_frills_Root_L",
         };
 
         internal new void ChangeObj(List<string> delPath)

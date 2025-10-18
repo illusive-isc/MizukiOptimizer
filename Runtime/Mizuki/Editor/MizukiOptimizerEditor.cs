@@ -107,6 +107,12 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 
             EditorGUILayout.PropertyField(FronthairRightFlg, new GUIContent("前髪右メニュー削除"));
             EditorGUILayout.PropertyField(HairFlg, new GUIContent("髪削除"));
+            if (HairFlg.boolValue)
+            {
+                FronthairLeftFlg.boolValue = true;
+                FronthairRightFlg.boolValue = true;
+                AccesaryFlg2.boolValue = true;
+            }
 
             EditorGUILayout.PropertyField(BreastSizeFlg, new GUIContent("バストサイズ変更削除"));
             if (!BreastSizeFlg.boolValue)
