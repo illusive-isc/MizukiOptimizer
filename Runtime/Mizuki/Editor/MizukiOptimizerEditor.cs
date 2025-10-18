@@ -93,6 +93,10 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             {
                 EarTailFlg2.boolValue = false;
             }
+            if (EarTailFlg2.boolValue)
+            {
+                EarAngryFlg.boolValue = true;
+            }
             EditorGUILayout.PropertyField(ElfEarFlg, new GUIContent("エルフ耳メニュー削除"));
 
             if (!ElfEarFlg.boolValue)

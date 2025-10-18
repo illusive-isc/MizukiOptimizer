@@ -188,42 +188,14 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
 
         public new void EditVRCExpressions(VRCExpressionsMenu menu, List<string> menuPath)
         {
-            foreach (var control in menu.controls)
+            var def = new List<string> { "Gimmick2", "Gesture_change" };
+            if (FaceGestureFlg || FaceLockFlg)
+                base.EditVRCExpressions(menu, def.Concat(new List<string> { "FaceLock" }).ToList());
+            if (FaceGestureFlg || FaceValFlg)
             {
-                if (control.name == "Gimmick")
-                {
-                    var expressionsSubMenu = control.subMenu;
-
-                    foreach (var control2 in expressionsSubMenu.controls)
-                    {
-                        if (control2.name == "Face")
-                        {
-                            var expressionsSub2Menu = control2.subMenu;
-                            if (FaceGestureFlg || FaceLockFlg)
-                                foreach (var control3 in expressionsSub2Menu.controls)
-                                {
-                                    if (control3.name is "FaceLock")
-                                    {
-                                        expressionsSub2Menu.controls.Remove(control3);
-                                        break;
-                                    }
-                                }
-                            if (FaceGestureFlg || FaceValFlg)
-                                foreach (var control3 in expressionsSub2Menu.controls)
-                                {
-                                    if (control3.name is "Face_variation")
-                                    {
-                                        expressionsSub2Menu.controls.Remove(control3);
-                                        break;
-                                    }
-                                }
-                            control2.subMenu = expressionsSub2Menu;
-                            break;
-                        }
-                    }
-                    control.subMenu = expressionsSubMenu;
-                    break;
-                }
+                base.EditVRCExpressions(menu, def.Concat(new List<string> { "Face1" }).ToList());
+                base.EditVRCExpressions(menu, def.Concat(new List<string> { "Face2" }).ToList());
+                base.EditVRCExpressions(menu, def.Concat(new List<string> { "Face3" }).ToList());
             }
         }
     }

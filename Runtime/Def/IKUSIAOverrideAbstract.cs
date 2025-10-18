@@ -134,6 +134,7 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
         {
             var step4 = Stopwatch.StartNew();
             RemoveUnusedMenuControls(menu, param);
+            PromoteSingleSubMenu(menu);
             EditorUtility.SetDirty(paryi_FX);
             MarkAllMenusDirty(menu);
             EditorUtility.SetDirty(param);
@@ -802,6 +803,35 @@ namespace jp.illusive_isc.IKUSIAOverride.Mizuki
             }
 
             return used;
+        }
+
+        private static void PromoteSingleSubMenu(VRCExpressionsMenu menu)
+        {
+            if (menu == null)
+                return;
+
+            // 再帰的にサブメニューを処理
+            for (int i = 0; i < menu.controls.Count; i++)
+            {
+                var control = menu.controls[i];
+                if (
+                    control.type == VRCExpressionsMenu.Control.ControlType.SubMenu
+                    && control.subMenu != null
+                )
+                {
+                    var subMenu = control.subMenu;
+
+                    // 再帰的に処理
+                    PromoteSingleSubMenu(subMenu);
+
+                    // 子メニューが1件しかない場合、親メニューの同じ位置に置き換える
+                    if (subMenu.controls.Count == 1)
+                    {
+                        var singleControl = subMenu.controls[0];
+                        menu.controls[i] = singleControl;
+                    }
+                }
+            }
         }
     }
 }
